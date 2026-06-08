@@ -1,0 +1,136 @@
+/* responsive.css — Mobile-first overrides */
+
+/* Global overflow fix */
+*, *::before, *::after { box-sizing: border-box; }
+.container { max-width: 100%; overflow-x: hidden; }
+
+@media (max-width: 1320px) {
+  .container { max-width: 100%; padding: 0 20px; }
+}
+
+@media (max-width: 1100px) {
+  /* Reduce nav font/padding further on medium laptops */
+  .nav-link { padding: 14px 9px; font-size: 0.78rem; }
+}
+
+@media (max-width: 1024px) {
+  .mega-dropdown { max-width: min(420px, calc(100vw - 32px)); grid-template-columns: repeat(2, 1fr); }
+  .product-detail { grid-template-columns: 1fr; }
+  .nav-toggle { display: flex; }
+  .nav-list { display: none; }
+  .trust-badges .container { grid-template-columns: repeat(2, 1fr); }
+  .header-main { grid-template-columns: auto auto; }
+  .header-search { display: none; }
+}
+
+@media (max-width: 768px) {
+  .form-row { grid-template-columns: 1fr; }
+  .hero-slide { min-height: 280px; }
+  .hero-title { font-size: 1.6rem; }
+  .hero-subtitle { font-size: 0.9rem; }
+  .hero-actions .btn { padding: 10px 16px; font-size: 0.85rem; }
+  .section { padding: 32px 0; }
+  .section-lg { padding: 48px 0; }
+  .modal { max-width: 100%; margin: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .cart-drawer { width: 100%; right: -100%; }
+  .toast-container { bottom: 16px; right: 16px; left: 16px; }
+  .toast { min-width: unset; width: 100%; }
+
+  /* Category grid */
+  .category-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px; }
+
+  /* Brand carousel */
+  .brand-carousel .swiper-slide { width: 120px !important; }
+
+  /* Why grid */
+  .why-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr !important; gap: 24px; }
+
+  /* Announcement bar phone — hide on very small */
+  .announcement-phone { display: none; }
+
+  /* Trust badges */
+  .trust-badges .container { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  .btn { padding: 10px 16px; font-size: 0.85rem; }
+  .btn-lg { padding: 12px 20px; font-size: 0.9rem; }
+  .header-icon-btn span { display: none; }
+  .header-icon-btn { padding: 8px; }
+  .product-card-body { padding: 10px; }
+  .product-name { font-size: 0.82rem; }
+  .container { padding: 0 12px; }
+
+  /* Grids to 2 cols on mobile */
+  .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+  /* Sort bar */
+  .sort-bar { padding: 10px 12px; gap: 8px; }
+  .sort-select { font-size: 0.8rem; padding: 7px 8px; }
+
+  /* Trust badges single row scroll */
+  .trust-badges .container { grid-template-columns: repeat(2, 1fr); }
+  .trust-badge-text span { display: none; }
+
+  /* Why grid single col */
+  .why-grid { grid-template-columns: 1fr !important; }
+
+  /* Promo banner */
+  .promo-banner-title { font-size: 1.4rem; }
+
+  /* Hero */
+  .hero-slide { min-height: 240px; }
+  .hero-title { font-size: 1.4rem; }
+  .hero-actions { flex-direction: column; gap: 8px; }
+  .hero-actions .btn { width: 100%; text-align: center; justify-content: center; }
+}
+
+/* Sticky mobile bottom bar */
+.mobile-sticky-bar {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--color-white);
+  border-top: 1px solid var(--color-border);
+  padding: 12px 16px;
+  z-index: 400;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+@media (max-width: 768px) {
+  .mobile-sticky-bar { display: flex; gap: 12px; }
+  body { padding-bottom: 20px; }
+  #main { margin-bottom: 32px; }
+  .container.section { padding-top: 40px; }
+  .page-hero { padding: 32px 0 24px; }
+}
+
+/* Scroll to top */
+.scroll-top {
+  position: fixed; bottom: 90px; right: 20px;
+  width: 44px; height: 44px;
+  background: var(--color-secondary);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0; visibility: hidden;
+  transition: all var(--transition);
+  z-index: 300;
+  box-shadow: var(--shadow-hover);
+}
+.scroll-top.show { opacity: 1; visibility: visible; }
+.scroll-top:hover { background: #b8832e; transform: translateY(-3px); }
+
+/* Prevent any element from causing horizontal overflow */
+@media (max-width: 768px) {
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  img { max-width: 100%; height: auto; }
+  iframe { max-width: 100%; }
+  pre, code { overflow-x: auto; max-width: 100%; }
+}

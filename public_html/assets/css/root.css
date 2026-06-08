@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --color-primary:    #1A1A2E;
+  --color-secondary:  #C8963C;
+  --color-burgundy:   #8B2635;
+  --color-success:    #2D7A4F;
+  --color-warning:    #D4832B;
+  --color-error:      #C0392B;
+  --color-bg-light:   #F5F0E8;
+  --color-text:       #1A1A2E;
+  --color-text-muted: #6B7280;
+  --color-border:     #E5E0D8;
+  --color-white:      #FFFFFF;
+  --color-dark:       #0D0D1A;
+
+  --font-heading: 'Playfair Display', serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --shadow-card:  0 2px 8px rgba(0,0,0,0.08);
+  --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+  --shadow-modal: 0 8px 30px rgba(0,0,0,0.15);
+
+  --radius:    4px;
+  --radius-lg: 8px;
+  --radius-xl: 16px;
+  --transition: 0.25s ease;
+  --max-width:  1320px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; transition: color var(--transition); }
+ul, ol { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea { font-family: inherit; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  color: var(--color-primary);
+}
+
+h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); }
+h2 { font-size: clamp(1.4rem, 3vw, 2rem); }
+h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); }
+h4 { font-size: 1.1rem; }
+
+p { margin-bottom: 1rem; }
+p:last-child { margin-bottom: 0; }
+
+.price {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.price-compare {
+  font-family: var(--font-mono);
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+  font-size: 0.9em;
+}
+
+.text-gold   { color: var(--color-secondary); }
+.text-muted  { color: var(--color-text-muted); }
+.text-success{ color: var(--color-success); }
+.text-error  { color: var(--color-error); }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}

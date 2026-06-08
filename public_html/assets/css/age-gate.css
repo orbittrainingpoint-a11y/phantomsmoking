@@ -1,0 +1,49 @@
+/* age-gate.css */
+.age-gate {
+  position: fixed; inset: 0;
+  background: var(--color-primary);
+  z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.age-gate-bg {
+  position: absolute; inset: 0;
+  background: url('/assets/images/age-gate-bg.jpg') center/cover no-repeat;
+  opacity: 0.15;
+}
+.age-gate-card {
+  position: relative; z-index: 1;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-xl);
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+.age-gate-logo { margin-bottom: 24px; }
+.age-gate-logo .site-logo-text { font-size: 2rem; color: var(--color-white); }
+.age-gate-logo .site-logo-text span { color: var(--color-secondary); }
+.age-gate-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--color-error);
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.age-gate-title { font-family: var(--font-heading); font-size: 1.8rem; color: var(--color-white); margin-bottom: 12px; }
+.age-gate-text { color: rgba(255,255,255,0.7); font-size: 0.92rem; margin-bottom: 28px; }
+.age-gate-dob { margin-bottom: 24px; }
+.age-gate-dob label { color: rgba(255,255,255,0.8); font-size: 0.88rem; font-weight: 600; display: block; margin-bottom: 8px; }
+.age-gate-dob input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; text-align: center; }
+.age-gate-dob input:focus { border-color: var(--color-secondary); }
+.age-gate-actions { display: flex; flex-direction: column; gap: 12px; }
+.age-gate-enter { background: var(--color-secondary); color: #fff; padding: 16px; border-radius: var(--radius); font-size: 1rem; font-weight: 700; cursor: pointer; transition: all var(--transition); }
+.age-gate-enter:hover { background: #b8832e; transform: translateY(-2px); }
+.age-gate-exit { color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; transition: color var(--transition); }
+.age-gate-exit:hover { color: rgba(255,255,255,0.8); }
+.age-gate-warning { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 20px; }
