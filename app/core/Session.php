@@ -11,7 +11,7 @@ class Session
             $isHttps  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
                      || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https'
                      || ($_SERVER['HTTP_X_FORWARDED_SSL'] ?? '') === 'on';
-            $secure   = $isHttps && filter_var($_ENV['SESSION_SECURE'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            $secure   = $isHttps; // Always secure when on HTTPS
             ini_set('session.use_strict_mode', '1');
             ini_set('session.use_only_cookies', '1');
             ini_set('session.use_trans_sid', '0');

@@ -256,7 +256,7 @@
       <div id="settings-contact" class="settings-tab-panel" style="display:none">
         <h4 style="margin-bottom:16px">Floating Contact Buttons</h4>
         <p style="color:var(--color-text-muted);font-size:0.88rem;margin-bottom:20px">These buttons appear fixed on the bottom-right of every page.</p>
-        <div class="form-group"><label class="form-label">WhatsApp Number <span style="font-weight:400;color:var(--color-text-muted)">(digits only, with country code)</span></label><input type="text" name="whatsapp_number" class="form-control" value="<?= e($settings['whatsapp_number'] ?? '971562177081') ?>" placeholder="971562177081"></div>
+        <div class="form-group"><label class="form-label">WhatsApp Number <span style="font-weight:400;color:var(--color-text-muted)">(digits only, with country code)</span></label><input type="text" name="whatsapp_number" class="form-control" value="<?= e($settings['whatsapp_number'] ?? '971568335210') ?>" placeholder="971568335210"></div>
         <div class="form-group"><label class="form-label">Contact Email</label><input type="email" name="contact_email" class="form-control" value="<?= e($settings['contact_email'] ?? '') ?>"></div>
         <button type="submit" class="btn btn-primary">Save Contact Settings</button>
       </div>

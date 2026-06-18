@@ -52,14 +52,6 @@ class AuthController extends Controller
             $this->redirect('/login');
         }
 
-        // Bypass OTP for specific admin emails
-        $otpBypass = ['admin@sultanssmokedubai.com', 'solsedighi@gmail.com'];
-        if (in_array($email, $otpBypass)) {
-            Auth::login($user);
-            (new Cart())->mergeGuestCart($user['id']);
-            $this->redirect($redirect ?: '/account');
-        }
-
         // Credentials valid — send OTP
         $this->sendOtp($email, 'login');
 
@@ -96,7 +88,7 @@ class AuthController extends Controller
 
         $email = strtolower(trim($this->request->post('email', '')));
         if ($this->userModel->findByEmail($email)) {
-            $errors['email'] = 'Email already registered.';
+            $errors['email'] = 'An account with this email may already exist. Try logging in.';
         }
 
         if (!empty($errors)) {
@@ -163,9 +155,10 @@ class AuthController extends Controller
             $this->redirect('/login');
         }
 
-        if (!hash_equals($otp['otp_code'], $code)) {
-            $this->db->update('otp_verifications', ['attempts' => $otp['attempts'] + 1], 'id = ?', [$otp['id']]);
-            $remaining = 4 - $otp['attempts'];
+        if (!hash_equals($otp['otp_code'], hash('sha256', $code))) {
+            $newAttempts = $otp['attempts'] + 1;
+            $this->db->update('otp_verifications', ['attempts' => $newAttempts], 'id = ?', [$otp['id']]);
+            $remaining = 5 - $newAttempts;
             $this->flash('error', "Incorrect code. {$remaining} attempt(s) remaining.");
             $this->redirect('/otp/verify');
         }
@@ -223,6 +216,18 @@ class AuthController extends Controller
 
     public function forgot(): void
     {
+        $ip    = $this->request->ip();
+        $since = date('Y-m-d H:i:s', strtotime('-15 minutes'));
+        $count = (int)$this->db->fetch(
+            'SELECT COUNT(*) as cnt FROM login_attempts WHERE ip_address = ? AND attempted_at >= ?',
+            [$ip . '_pwreset', $since]
+        )['cnt'];
+        if ($count >= 3) {
+            $this->flash('error', 'Too many requests. Please wait 15 minutes.');
+            $this->redirect('/forgot-password');
+        }
+        $this->db->insert('login_attempts', ['ip_address' => $ip . '_pwreset', 'email' => null]);
+
         $email = strtolower(trim($this->request->post('email', '')));
         $user  = $this->userModel->findByEmail($email);
         if ($user) {
@@ -235,6 +240,7 @@ class AuthController extends Controller
             ]);
             send_password_reset($email, $token);
         }
+        // Generic message prevents email enumeration
         $this->flash('success', 'If that email exists, a reset link has been sent.');
         $this->redirect('/forgot-password');
     }
@@ -303,11 +309,12 @@ class AuthController extends Controller
         // Invalidate previous unused OTPs for this email+purpose
         $this->db->update('otp_verifications', ['used' => 1], 'email = ? AND purpose = ? AND used = 0', [$email, $purpose]);
 
-        $code = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $code     = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $codeHash = hash('sha256', $code);
 
         $this->db->insert('otp_verifications', [
             'email'      => $email,
-            'otp_code'   => $code,
+            'otp_code'   => $codeHash,
             'purpose'    => $purpose,
             'expires_at' => date('Y-m-d H:i:s', strtotime('+10 minutes')),
         ]);

@@ -86,7 +86,23 @@ class PaymentController extends Controller
     // ── Tamara webhook ────────────────────────────────────────────────────────
     public function tamaraWebhook(): void
     {
-        $payload = json_decode(file_get_contents('php://input'), true);
+        $body      = file_get_contents('php://input');
+        $signature = $_SERVER['HTTP_X_TAMARA_SIGNATURE'] ?? '';
+        $secret    = $this->db->fetch(
+            "SELECT setting_value FROM settings WHERE setting_key='tamara_notification_key'"
+        )['setting_value'] ?? '';
+
+        if ($secret) {
+            $expected = hash_hmac('sha256', $body, $secret);
+            if (!hash_equals($expected, $signature)) {
+                http_response_code(401);
+                error_log('[Tamara Webhook] Invalid signature from ' . ($_SERVER['REMOTE_ADDR'] ?? ''));
+                echo 'Unauthorized';
+                exit;
+            }
+        }
+
+        $payload = json_decode($body, true);
         if (!empty($payload['order_id']) && ($payload['event_type'] ?? '') === 'order_approved') {
             $order = $this->db->fetch('SELECT * FROM orders WHERE order_number = ?', [$payload['order_reference_id'] ?? '']);
             if ($order && $order['payment_status'] !== 'paid') {
@@ -102,11 +118,22 @@ class PaymentController extends Controller
     private function finalisePayment(array $order, array $result, string $gateway): void
     {
         if ($result['success']) {
+            // Verify this order belongs to current user (prevent IDOR)
+            if ($order['user_id'] && Auth::check() && $order['user_id'] !== Auth::id()) {
+                error_log("Payment IDOR attempt: order #{$order['id']} user_id={$order['user_id']} session_user=" . Auth::id());
+                $this->redirect('/');
+            }
             $this->db->update('orders', [
                 'payment_status'         => 'paid',
                 'order_status'           => 'confirmed',
                 'payment_transaction_id' => $result['transaction_id'] ?? '',
             ], 'id = ?', [$order['id']]);
+            // Store in session for guest access
+            if (!$order['user_id']) {
+                $guestOrders = \App\Core\Session::get('guest_order_ids', []);
+                $guestOrders[] = (int)$order['id'];
+                \App\Core\Session::set('guest_order_ids', array_slice($guestOrders, -5));
+            }
             $this->redirect('/order/confirm/' . $order['id']);
         } else {
             error_log("Payment failed [{$gateway}] order #{$order['order_number']}: " . ($result['error'] ?? ''));

@@ -26,6 +26,11 @@ $baseUrl = rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/');
 <meta property="og:type" content="website">
 <meta property="og:url" content="<?= $baseUrl . e($_SERVER['REQUEST_URI'] ?? '/') ?>">
 <meta name="csrf-token" content="<?php if (!\App\Core\Session::has('csrf_token')) \App\Core\Session::set('csrf_token', bin2hex(random_bytes(32))); echo e(\App\Core\Session::get('csrf_token')); ?>">
+<!-- Favicons -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon-180x180.png">
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#C8963C">
@@ -33,7 +38,6 @@ $baseUrl = rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/');
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Phantom">
-<link rel="apple-touch-icon" href="/assets/images/icon-192.png">
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,7 +69,7 @@ $baseUrl = rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/');
     <div class="announcement-marquee">
       <span>🚀 FREE NEXT DAY DELIVERY ON ORDERS OVER AED 100 &nbsp;|&nbsp; ⚡ 1 HOUR EXPRESS DELIVERY AVAILABLE IN DUBAI &nbsp;|&nbsp; 🎁 EARN REWARD POINTS ON EVERY PURCHASE &nbsp;|&nbsp; 🔞 AGE RESTRICTED — 18+ ONLY</span>
     </div>
-    <div class="announcement-phone"><a href="tel:+971562177081"><i class="fas fa-phone"></i> +971 56 217 7081</a></div>
+    <div class="announcement-phone"><a href="tel:+971568335210"><i class="fas fa-phone"></i> +971 56 833 5210</a></div>
   </div>
 </div>
 
@@ -250,7 +254,7 @@ $baseUrl = rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/');
           <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
           <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
           <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-          <a href="https://wa.me/971562177081" class="social-link"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://wa.me/971568335210" class="social-link"><i class="fab fa-whatsapp"></i></a>
         </div>
         <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
           <input type="email" class="newsletter-input" placeholder="Your email address" required>
@@ -275,9 +279,9 @@ $baseUrl = rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/');
       <div>
         <div class="footer-heading">Contact Us</div>
         <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i><span>Dubai, United Arab Emirates</span></div>
-        <div class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+971562177081">+971 56 217 7081</a></div>
+        <div class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+971568335210">+971 56 833 5210</a></div>
         <div class="footer-contact-item"><i class="fas fa-envelope"></i><a href="mailto:info@phantomsmoking.com">info@phantomsmoking.com</a></div>
-        <div class="footer-contact-item"><i class="fab fa-whatsapp"></i><a href="https://wa.me/971562177081">WhatsApp Us</a></div>
+        <div class="footer-contact-item"><i class="fab fa-whatsapp"></i><a href="https://wa.me/971568335210">WhatsApp Us</a></div>
         <div class="footer-contact-item"><i class="fas fa-clock"></i><span>Sat–Thu: 10AM–11PM | Fri: 2PM–11PM</span></div>
       </div>
     </div>
@@ -295,7 +299,7 @@ $baseUrl = rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/');
 <!-- Floating Contact Buttons -->
 <?php
 $_db = \App\Core\Database::getInstance();
-$_wa  = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='whatsapp_number'")['setting_value'] ?? '971562177081';
+$_wa  = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='whatsapp_number'")['setting_value'] ?? '971568335210';
 $_em  = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='contact_email'")['setting_value'] ?? 'info@phantomsmoking.com';
 ?>
 <div style="position:fixed;bottom:24px;right:18px;display:flex;flex-direction:column;gap:12px;z-index:99999">

@@ -12,16 +12,13 @@ class CsrfMiddleware
             $stored = Session::get('csrf_token', '');
             if (empty($stored) || !hash_equals($stored, $token)) {
                 http_response_code(403);
-                // Regenerate token after failed attempt
-                Session::set('csrf_token', bin2hex(random_bytes(32)));
                 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                     header('Content-Type: application/json');
                     die(json_encode(['error' => 'Invalid CSRF token']));
                 }
-                die('403 Forbidden — Invalid CSRF token');
+                die('403 Forbidden');
             }
-            // Rotate CSRF token after each POST
-            Session::set('csrf_token', bin2hex(random_bytes(32)));
+            // Do NOT rotate per-request — token is per-session, rotated only on login/logout
         }
     }
 }

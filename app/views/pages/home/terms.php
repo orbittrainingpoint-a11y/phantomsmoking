@@ -20,7 +20,7 @@
       ['Limitation of Liability', 'Phantom Smoking shall not be liable for any indirect, incidental, or consequential damages arising from the use of our products or services. Our total liability shall not exceed the value of the order in question.'],
       ['Health Warning', '⚠️ Tobacco and nicotine products are harmful to health. Smoking causes cancer, heart disease, stroke, lung diseases, and other serious conditions. Phantom Smoking complies with UAE Federal Law No. 15 of 2009 on Tobacco Control and all applicable UAE regulations regarding the sale and marketing of tobacco and nicotine products.'],
       ['Governing Law', 'These Terms & Conditions are governed by and construed in accordance with the laws of the United Arab Emirates. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts of Dubai, UAE.'],
-      ['Contact', 'For any questions regarding these Terms & Conditions, please contact us at <a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a> or call <a href="tel:+971562177081" style="color:var(--color-secondary)">+971 56 217 7081</a>.'],
+      ['Contact', 'For any questions regarding these Terms & Conditions, please contact us at <a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a> or call <a href="tel:+971568335210" style="color:var(--color-secondary)">+971 56 833 5210</a>.'],
     ] as [$heading, $content]): ?>
     <h2 style="font-family:var(--font-heading);color:var(--color-primary);font-size:1.2rem;margin:28px 0 10px;padding-top:8px;border-top:1px solid var(--color-border)"><?= $heading ?></h2>
     <p><?= $content ?></p>

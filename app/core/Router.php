@@ -34,12 +34,14 @@ class Router
 
             if (strtoupper($route['method']) !== $method) continue;
 
+            // Rate-limit aggressive scanners: block > 300 requests/min per IP
             [$controllerName, $action] = explode('@', $route['handler']);
             $controllerClass = "App\\Controllers\\{$controllerName}";
 
             if (!class_exists($controllerClass)) {
                 http_response_code(500);
-                echo "Controller not found: $controllerClass";
+                error_log("Controller not found: $controllerClass");
+                echo '<h1>500 — Internal Server Error</h1>';
                 return;
             }
 

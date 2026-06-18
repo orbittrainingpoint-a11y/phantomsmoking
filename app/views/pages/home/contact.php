@@ -55,7 +55,7 @@ $_mapAddr = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='s
             <div class="contact-card-value">
               <a href="tel:+971555426436">+971 55 542 6436</a><br>
               <a href="tel:+971503339627">+971 50 333 9627</a><br>
-              <a href="tel:+971562177081">+971 56 217 7081</a>
+              <a href="tel:+971568335210">+971 56 833 5210</a>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@ $_mapAddr = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='s
           <div>
             <div class="contact-card-label">WhatsApp</div>
             <div class="contact-card-value">
-              <a href="https://wa.me/971562177081" target="_blank">+971 56 217 7081</a><br>
+              <a href="https://wa.me/971568335210" target="_blank">+971 56 833 5210</a><br>
               <span style="font-size:0.78rem;color:var(--color-text-muted)">Tap to chat instantly</span>
             </div>
           </div>
@@ -91,10 +91,10 @@ $_mapAddr = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='s
 
       <!-- Quick Action Buttons -->
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
-        <a href="tel:+971562177081" class="btn btn-primary" style="flex:1;min-width:140px;justify-content:center">
+        <a href="tel:+971568335210" class="btn btn-primary" style="flex:1;min-width:140px;justify-content:center">
           <i class="fas fa-phone"></i> Call Now
         </a>
-        <a href="https://wa.me/971562177081" target="_blank" class="btn" style="flex:1;min-width:140px;justify-content:center;background:#25d366;color:#fff;border:none">
+        <a href="https://wa.me/971568335210" target="_blank" class="btn" style="flex:1;min-width:140px;justify-content:center;background:#25d366;color:#fff;border:none">
           <i class="fab fa-whatsapp"></i> WhatsApp
         </a>
       </div>

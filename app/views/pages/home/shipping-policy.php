@@ -37,6 +37,6 @@
     <p>In compliance with UAE Federal Law No. 15 of 2009 on Tobacco Control, our delivery team may request proof of age (Emirates ID or passport) upon delivery. Orders will not be handed over to individuals who appear to be under 18 years of age.</p>
 
     <h2 style="font-family:var(--font-heading);color:var(--color-primary);font-size:1.2rem;margin:24px 0 12px">Contact Us</h2>
-    <p>For any shipping queries, contact us at <a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a> or call <a href="tel:+971562177081" style="color:var(--color-secondary)">+971 56 217 7081</a>.</p>
+    <p>For any shipping queries, contact us at <a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a> or call <a href="tel:+971568335210" style="color:var(--color-secondary)">+971 56 833 5210</a>.</p>
   </div>
 </div>

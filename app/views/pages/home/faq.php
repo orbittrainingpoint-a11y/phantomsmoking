@@ -3,11 +3,11 @@
   ['What is the minimum age to order?', 'You must be 18 years or older to purchase from Phantom Smoking. We comply with UAE Federal Law No. 15 of 2009 on Tobacco Control.'],
   ['How do reward points work?', 'You earn 1 point for every AED 1 spent. 100 points = AED 10 discount. Minimum 500 points to redeem. Points expire after 12 months of inactivity.'],
   ['What payment methods do you accept?', 'We accept Cash on Delivery (COD), Credit/Debit Cards (Visa, Mastercard, Amex) via Stripe, and regional payment options including Tabby and Tamara (Buy Now Pay Later).'],
-  ['Can I return a product?', 'We accept returns within 7 days for unopened, sealed products in original condition. Contact us at info@phantomsmoking.com or call +971 56 217 7081.'],
+  ['Can I return a product?', 'We accept returns within 7 days for unopened, sealed products in original condition. Contact us at info@phantomsmoking.com or call +971 56 833 5210.'],
   ['How do I track my order?', 'You will receive an SMS/email with your order number. Use the Track Order page or your account dashboard to check your order status in real time.'],
   ['Are your products authentic?', '100% yes. All Phantom Smoking products are sourced directly from authorized distributors. We never sell counterfeit or imitation goods.'],
   ['Is there a free delivery threshold?', 'Standard delivery is free on orders over AED 100. Express 1-hour delivery in Dubai is AED 25 flat.'],
-  ['How do I contact customer support?', 'You can reach us by phone at +971 55 542 6436, +971 50 333 9627, or +971 56 217 7081. You can also email us at info@phantomsmoking.com or WhatsApp us at +971 56 217 7081.'],
+  ['How do I contact customer support?', 'You can reach us by phone at +971 55 542 6436, +971 50 333 9627, or +971 56 833 5210. You can also email us at info@phantomsmoking.com or WhatsApp us at +971 56 833 5210.'],
   ['Where are you located?', 'We are based in Dubai Marina - Marsa Dubai, Dubai Marina, Dubai, United Arab Emirates.'],
 ]; ?>
 
@@ -33,8 +33,8 @@
     <div style="font-family:var(--font-heading);font-size:1.1rem;margin-bottom:8px">Still have questions?</div>
     <p style="color:var(--color-text-muted);font-size:0.9rem;margin-bottom:16px">Our team is available 7 days a week to help you.</p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <a href="tel:+971562177081" class="btn btn-primary"><i class="fas fa-phone"></i> Call Us</a>
-      <a href="https://wa.me/971562177081" class="btn" style="background:#25d366;color:#fff;border:none" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="tel:+971568335210" class="btn btn-primary"><i class="fas fa-phone"></i> Call Us</a>
+      <a href="https://wa.me/971568335210" class="btn" style="background:#25d366;color:#fff;border:none" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
       <a href="/contact" class="btn btn-outline"><i class="fas fa-envelope"></i> Contact Form</a>
     </div>
   </div>

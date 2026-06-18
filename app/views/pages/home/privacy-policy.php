@@ -17,7 +17,7 @@
       ['Cookies', 'We use cookies to improve your browsing experience, remember your cart, and analyse site traffic. You can disable cookies in your browser settings, though this may affect site functionality.'],
       ['Data Security', 'We implement industry-standard security measures including SSL encryption, secure servers, and access controls to protect your personal data from unauthorised access, disclosure, or loss.'],
       ['Your Rights', 'You have the right to access, correct, or request deletion of your personal data. To exercise these rights, contact us at <a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a>.'],
-      ['Contact', 'For any privacy-related queries, contact Phantom Smoking at:<br><a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a><br><a href="tel:+971562177081" style="color:var(--color-secondary)">+971 56 217 7081</a><br>Dubai Marina, Marsa Dubai, Dubai, UAE'],
+      ['Contact', 'For any privacy-related queries, contact Phantom Smoking at:<br><a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a><br><a href="tel:+971568335210" style="color:var(--color-secondary)">+971 56 833 5210</a><br>Dubai Marina, Marsa Dubai, Dubai, UAE'],
     ] as [$heading, $content]): ?>
     <h2 style="font-family:var(--font-heading);color:var(--color-primary);font-size:1.2rem;margin:28px 0 10px;padding-top:8px;border-top:1px solid var(--color-border)"><?= $heading ?></h2>
     <div><?= $content ?></div>

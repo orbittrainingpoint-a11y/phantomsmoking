@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS `otp_verifications` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `email` VARCHAR(180) NOT NULL,
-  `otp_code` VARCHAR(6) NOT NULL,
+  `otp_code` VARCHAR(64) NOT NULL,
   `purpose` ENUM('login','register') NOT NULL DEFAULT 'login',
   `attempts` TINYINT UNSIGNED DEFAULT 0,
   `expires_at` DATETIME NOT NULL,

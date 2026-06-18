@@ -326,13 +326,27 @@ class Product extends Model
         );
     }
 
-    public function updateStock(int $productId, ?int $variantId, int $qty, string $operation = 'decrement'): void
+    public function updateStock(int $productId, ?int $variantId, int $qty, string $operation = 'decrement'): bool
     {
-        $col = $operation === 'decrement' ? 'stock_quantity - ?' : 'stock_quantity + ?';
-        if ($variantId) {
-            $this->db->query("UPDATE product_variants SET stock_quantity = $col WHERE id = ?", [$qty, $variantId]);
+        if ($operation === 'decrement') {
+            // Atomic decrement — WHERE clause prevents negative stock (race condition safe)
+            $rows = $this->db->query(
+                'UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ? AND stock_quantity >= ?',
+                [$qty, $productId, $qty]
+            )->rowCount();
+            if ($variantId) {
+                $this->db->query(
+                    'UPDATE product_variants SET stock_quantity = stock_quantity - ? WHERE id = ? AND stock_quantity >= ?',
+                    [$qty, $variantId, $qty]
+                );
+            }
+            return $rows > 0;
         }
-        $this->db->query("UPDATE products SET stock_quantity = $col WHERE id = ?", [$qty, $productId]);
+        $this->db->query('UPDATE products SET stock_quantity = stock_quantity + ? WHERE id = ?', [$qty, $productId]);
+        if ($variantId) {
+            $this->db->query('UPDATE product_variants SET stock_quantity = stock_quantity + ? WHERE id = ?', [$qty, $variantId]);
+        }
+        return true;
     }
 
     public function updateProductRating(int $productId): void

@@ -16,9 +16,15 @@ class AgeGateController extends Controller
 
     public function verify(): void
     {
-        $confirm = $this->request->post('confirm');
-        $dob     = $this->request->post('dob', '');
+        $confirm  = $this->request->post('confirm');
+        $dob      = $this->request->post('dob', '');
         $redirect = $this->request->post('redirect', '/');
+
+        // Prevent open redirect via redirect param
+        $parsed  = parse_url($redirect);
+        if (!empty($parsed['host'])) {
+            $redirect = '/';
+        }
 
         if ($confirm === 'yes') {
             if ($dob && !validate_age($dob, 18)) {
@@ -26,7 +32,15 @@ class AgeGateController extends Controller
                 $this->redirect('/age-verify?redirect=' . urlencode($redirect));
             }
             Session::set('age_verified', 1);
-            setcookie('age_verified', '1', time() + (30 * 86400), '/', '', false, true);
+            $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                    || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
+            setcookie('age_verified', '1', [
+                'expires'  => time() + (30 * 86400),
+                'path'     => '/',
+                'secure'   => $isHttps,
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
             $this->redirect($redirect ?: '/');
         } else {
             $this->redirect('https://www.google.com');

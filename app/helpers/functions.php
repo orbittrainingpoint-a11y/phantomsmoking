@@ -57,6 +57,11 @@ if (!function_exists('url')) {
 if (!function_exists('redirect')) {
     function redirect(string $url): void
     {
+        $parsed  = parse_url($url);
+        $appHost = parse_url($_ENV['APP_URL'] ?? '', PHP_URL_HOST);
+        if (!empty($parsed['host']) && $parsed['host'] !== $appHost) {
+            $url = '/';
+        }
         header("Location: $url");
         exit;
     }

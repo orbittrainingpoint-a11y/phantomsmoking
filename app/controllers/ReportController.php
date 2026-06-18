@@ -329,32 +329,32 @@ class ReportController extends Controller
             case 'sales':
                 $headers = '<tr><th>Product</th><th>SKU</th><th>Units Sold</th><th>Revenue (AED)</th></tr>';
                 foreach ($data['top_products'] as $r)
-                    $rows .= "<tr><td>{$r['name']}</td><td>{$r['sku']}</td><td>{$r['units']}</td><td>".number_format($r['revenue'],2)."</td></tr>";
+                    $rows .= '<tr><td>'.e($r['name']).'</td><td>'.e($r['sku']).'</td><td>'.intval($r['units']).'</td><td>'.number_format($r['revenue'],2).'</td></tr>';
                 break;
             case 'inventory':
                 $headers = '<tr><th>Product</th><th>SKU</th><th>Category</th><th>Stock</th><th>Status</th></tr>';
                 foreach ($data['products'] as $r)
-                    $rows .= "<tr><td>{$r['name']}</td><td>{$r['sku']}</td><td>{$r['category']}</td><td>{$r['stock_quantity']}</td><td>".($r['stock_quantity']<=$r['low_stock_threshold']?'<span style="color:red">LOW</span>':'OK')."</td></tr>";
+                    $rows .= '<tr><td>'.e($r['name']).'</td><td>'.e($r['sku']).'</td><td>'.e($r['category']).'</td><td>'.intval($r['stock_quantity']).'</td><td>'.($r['stock_quantity']<=$r['low_stock_threshold']?'<span style="color:red">LOW</span>':'OK').'</td></tr>';
                 break;
             case 'customers':
                 $headers = '<tr><th>Name</th><th>Email</th><th>Orders</th><th>Total Spent</th><th>Since</th></tr>';
                 foreach ($data['top_customers'] as $r)
-                    $rows .= "<tr><td>{$r['first_name']} {$r['last_name']}</td><td>{$r['email']}</td><td>{$r['total_orders']}</td><td>AED ".number_format($r['total_spent'],2)."</td><td>{$r['created_at']}</td></tr>";
+                    $rows .= '<tr><td>'.e($r['first_name'].' '.$r['last_name']).'</td><td>'.e($r['email']).'</td><td>'.intval($r['total_orders']).'</td><td>AED '.number_format($r['total_spent'],2).'</td><td>'.e($r['created_at']).'</td></tr>';
                 break;
             case 'invoices':
                 $headers = '<tr><th>Order #</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr>';
                 foreach ($data['invoices'] as $r)
-                    $rows .= "<tr><td>{$r['order_number']}</td><td>{$r['shipping_name']}</td><td>AED ".number_format($r['total_amount'],2)."</td><td>".payment_method_label($r['payment_method'])."</td><td>{$r['payment_status']}</td><td>{$r['created_at']}</td></tr>";
+                    $rows .= '<tr><td>'.e($r['order_number']).'</td><td>'.e($r['shipping_name']).'</td><td>AED '.number_format($r['total_amount'],2).'</td><td>'.e(payment_method_label($r['payment_method'])).'</td><td>'.e($r['payment_status']).'</td><td>'.e($r['created_at']).'</td></tr>';
                 break;
             case 'delivery':
                 $headers = '<tr><th>Order #</th><th>Customer</th><th>Emirate</th><th>Type</th><th>Status</th><th>Total</th><th>Date</th></tr>';
                 foreach ($data['orders'] as $r)
-                    $rows .= "<tr><td>{$r['order_number']}</td><td>{$r['shipping_name']}</td><td>{$r['shipping_emirate']}</td><td>{$r['delivery_type']}</td><td>{$r['order_status']}</td><td>AED ".number_format($r['total_amount'],2)."</td><td>{$r['created_at']}</td></tr>";
+                    $rows .= '<tr><td>'.e($r['order_number']).'</td><td>'.e($r['shipping_name']).'</td><td>'.e($r['shipping_emirate']).'</td><td>'.e($r['delivery_type']).'</td><td>'.e($r['order_status']).'</td><td>AED '.number_format($r['total_amount'],2).'</td><td>'.e($r['created_at']).'</td></tr>';
                 break;
             case 'reviews':
                 $headers = '<tr><th>Product</th><th>Customer</th><th>Rating</th><th>Title</th><th>Status</th><th>Date</th></tr>';
                 foreach ($data['reviews'] as $r)
-                    $rows .= "<tr><td>{$r['product_name']}</td><td>{$r['first_name']} {$r['last_name']}</td><td>".str_repeat('★',$r['rating'])."</td><td>{$r['title']}</td><td>{$r['status']}</td><td>{$r['created_at']}</td></tr>";
+                    $rows .= '<tr><td>'.e($r['product_name']).'</td><td>'.e($r['first_name'].' '.$r['last_name']).'</td><td>'.str_repeat('&#9733;',(int)$r['rating']).'</td><td>'.e($r['title']).'</td><td>'.e($r['status']).'</td><td>'.e($r['created_at']).'</td></tr>';
                 break;
         }
 
@@ -391,21 +391,32 @@ HTML;
 
     private function buildInvoiceHtml(array $order, array $items): string
     {
-        $store   = $this->db->fetch("SELECT setting_value FROM settings WHERE setting_key='store_name'")['setting_value'] ?? 'Phantom Smoking';
+        $store   = e($this->db->fetch("SELECT setting_value FROM settings WHERE setting_key='store_name'")['setting_value'] ?? 'Phantom Smoking');
         $baseUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
         $rows    = '';
         foreach ($items as $i)
-            $rows .= "<tr><td>{$i['product_name']}</td><td>{$i['variant_name']}</td><td>{$i['quantity']}</td><td>AED ".number_format($i['unit_price'],2)."</td><td>AED ".number_format($i['total_price'],2)."</td></tr>";
+            $rows .= '<tr><td>'.e($i['product_name']).'</td><td>'.e($i['variant_name'] ?? '').'</td><td>'.intval($i['quantity']).'</td><td>AED '.number_format($i['unit_price'],2).'</td><td>AED '.number_format($i['total_price'],2).'</td></tr>';
 
-        $subtotal = number_format($order['subtotal'],2);
-        $discount = number_format($order['discount_amount'],2);
-        $shipping = number_format($order['shipping_cost'],2);
-        $tax      = number_format($order['tax_amount'],2);
-        $total    = number_format($order['total_amount'],2);
-        $pmLabel  = payment_method_label($order['payment_method']);
+        $subtotal   = number_format($order['subtotal'],2);
+        $discount   = number_format($order['discount_amount'],2);
+        $shipping   = number_format($order['shipping_cost'],2);
+        $tax        = number_format($order['tax_amount'],2);
+        $total      = number_format($order['total_amount'],2);
+        $pmLabel    = e(payment_method_label($order['payment_method']));
+        $orderNum   = e($order['order_number']);
+        $orderDate  = e($order['created_at']);
+        $payStatus  = e($order['payment_status']);
+        $shipName   = e($order['shipping_name']);
+        $shipPhone  = e($order['shipping_phone']);
+        $shipAddr   = e($order['shipping_address_line1']);
+        $shipArea   = e($order['shipping_area']);
+        $shipEmir   = e($order['shipping_emirate']);
+        $delivType  = e($order['delivery_type']);
+        $ordStatus  = e($order['order_status']);
+        $logoUrl    = e($baseUrl . '/assets/images/logo.webp');
 
         return <<<HTML
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice {$order['order_number']}</title>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice {$orderNum}</title>
 <style>
   body{font-family:Arial,sans-serif;font-size:12px;margin:30px;color:#222}
   .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
@@ -426,36 +437,16 @@ HTML;
   .paid{background:#d4edda;color:#155724} .pending{background:#fff3cd;color:#856404} .failed{background:#f8d7da;color:#721c24}
   @media print{@page{size:A4;margin:10mm} button{display:none}}
 </style></head><body>
-<button onclick="window.print()" style="margin-bottom:16px;padding:8px 20px;background:#C8963C;color:#fff;border:none;border-radius:4px;cursor:pointer">🖨 Print Invoice</button>
+<button onclick="window.print()" style="margin-bottom:16px;padding:8px 20px;background:#C8963C;color:#fff;border:none;border-radius:4px;cursor:pointer">Print Invoice</button>
 <div class="top">
-  <div class="logo"><img src="{$baseUrl}/assets/images/logo.webp" alt="{$store}"><br><small style="color:#666">{$store}</small></div>
-  <div class="inv-title">
-    <h1>INVOICE</h1>
-    <p><strong>{$order['order_number']}</strong></p>
-    <p>Date: {$order['created_at']}</p>
-    <p>Payment: <span class="badge {$order['payment_status']}">{$order['payment_status']}</span></p>
-  </div>
+  <div class="logo"><img src="{$logoUrl}" alt="{$store}"><br><small style="color:#666">{$store}</small></div>
+  <div class="inv-title"><h1>INVOICE</h1><p><strong>{$orderNum}</strong></p><p>Date: {$orderDate}</p><p>Payment: <span class="badge {$payStatus}">{$payStatus}</span></p></div>
 </div>
 <div class="info-grid">
-  <div>
-    <h4>Bill To</h4>
-    <p><strong>{$order['shipping_name']}</strong></p>
-    <p>{$order['shipping_phone']}</p>
-    <p>{$order['shipping_address_line1']}</p>
-    <p>{$order['shipping_area']}, {$order['shipping_emirate']}, UAE</p>
-  </div>
-  <div>
-    <h4>Payment Info</h4>
-    <p>Method: {$pmLabel}</p>
-    <p>Status: {$order['payment_status']}</p>
-    <p>Delivery: {$order['delivery_type']}</p>
-    <p>Order Status: {$order['order_status']}</p>
-  </div>
+  <div><h4>Bill To</h4><p><strong>{$shipName}</strong></p><p>{$shipPhone}</p><p>{$shipAddr}</p><p>{$shipArea}, {$shipEmir}, UAE</p></div>
+  <div><h4>Payment Info</h4><p>Method: {$pmLabel}</p><p>Status: {$payStatus}</p><p>Delivery: {$delivType}</p><p>Order Status: {$ordStatus}</p></div>
 </div>
-<table>
-  <thead><tr><th>Product</th><th>Variant</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
-  <tbody>{$rows}</tbody>
-</table>
+<table><thead><tr><th>Product</th><th>Variant</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>{$rows}</tbody></table>
 <table class="totals">
   <tr><td>Subtotal</td><td>AED {$subtotal}</td></tr>
   <tr><td>Discount</td><td>- AED {$discount}</td></tr>

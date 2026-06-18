@@ -534,6 +534,11 @@ class AdminController extends Controller
     {
         $json = trim($this->request->post('variations_json', ''));
         if (!$json) return;
+        // Size guard (HIGH-08)
+        if (strlen($json) > 512 * 1024) {
+            error_log('[handleVariationsJson] Payload too large for product ' . $productId);
+            return;
+        }
         $payload = json_decode($json, true);
         if (!$payload || empty($payload['variation_types'])) return;
 

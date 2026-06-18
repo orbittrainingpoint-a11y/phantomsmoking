@@ -57,7 +57,7 @@ try {
         ['delivery_base_fee',       '10'],
         ['delivery_per_km_fee',     '2'],
         ['delivery_free_km',        '0'],
-        ['whatsapp_number',         '971562177081'],
+        ['whatsapp_number',         '971568335210'],
         ['contact_email',           'info@phantomsmoking.com'],
         ['contact_whatsapp_label',  'Chat on WhatsApp'],
     ];

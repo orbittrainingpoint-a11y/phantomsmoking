@@ -49,6 +49,23 @@ class CartController extends Controller
             $this->json(['success' => false, 'error' => 'Product not available'], 400);
         }
 
+        // Validate combination belongs to this product (MED-09)
+        if ($combinationId) {
+            $combo = $this->db->fetch(
+                'SELECT id FROM product_variation_combinations WHERE id = ? AND product_id = ? AND is_active = 1',
+                [$combinationId, $productId]
+            );
+            if (!$combo) {
+                $this->json(['success' => false, 'error' => 'Invalid product option'], 400);
+            }
+        }
+
+        // Stock check before adding (MED-02)
+        $available = (int)($product['stock_quantity'] ?? 0);
+        if (!$product['allow_backorder'] && $available < $qty) {
+            $this->json(['success' => false, 'error' => 'Only ' . $available . ' unit(s) available'], 400);
+        }
+
         // Resolve price: combination > variant > base
         $price = $this->resolvePrice($productId, $combinationId, $variantId);
 

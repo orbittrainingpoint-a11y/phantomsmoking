@@ -158,6 +158,12 @@ class CheckoutController extends Controller
             $this->db->update('orders', ['order_status' => 'confirmed'], 'id = ?', [$orderId]);
             $order = $orderModel->getOrderWithItems($orderId);
             send_order_confirmation($order, $order['items']);
+            // Store order ID in session for guest access control
+            if (!Auth::check()) {
+                $guestOrders = \App\Core\Session::get('guest_order_ids', []);
+                $guestOrders[] = $orderId;
+                \App\Core\Session::set('guest_order_ids', array_slice($guestOrders, -5));
+            }
             $this->redirect('/order/confirm/' . $orderId);
         }
 

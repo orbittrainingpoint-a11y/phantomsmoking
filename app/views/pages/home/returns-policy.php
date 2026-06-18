@@ -33,7 +33,7 @@
     <h2 style="font-family:var(--font-heading);color:var(--color-primary);font-size:1.2rem;margin:24px 0 12px">How to Initiate a Return</h2>
     <div style="display:flex;flex-direction:column;gap:12px">
       <?php foreach ([
-        ['1', 'Contact us within 7 days of delivery at <a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a> or call <a href="tel:+971562177081" style="color:var(--color-secondary)">+971 56 217 7081</a>'],
+        ['1', 'Contact us within 7 days of delivery at <a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a> or call <a href="tel:+971568335210" style="color:var(--color-secondary)">+971 56 833 5210</a>'],
         ['2', 'Provide your order number, the item(s) you wish to return, and the reason for return'],
         ['3', 'Our team will arrange a collection from your address at no cost for defective or wrong items'],
         ['4', 'Once received and inspected, your refund will be processed within 5–7 business days'],

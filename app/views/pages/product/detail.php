@@ -416,8 +416,9 @@ function pvUpdatePriceArea() {
 
 // ══ Add to cart using selected combination ══
 async function pvAddToCart(buyNow) {
-    if (!_pvCombo) { showToast('Please select all options', 'error'); return; }
-    if (parseInt(_pvCombo.stock) <= 0) { showToast('This combination is out of stock', 'error'); return; }
+    const hasVariants = _pvTypes.length > 0;
+    if (hasVariants && !_pvCombo) { showToast('Please select all options', 'error'); return; }
+    if (hasVariants && parseInt(_pvCombo.stock) <= 0) { showToast('This combination is out of stock', 'error'); return; }
 
     const qty   = parseInt(document.getElementById('productQty')?.value) || 1;
     const btnId = buyNow ? 'buyNowBtn' : 'addToCartBtn';
@@ -434,7 +435,7 @@ async function pvAddToCart(buyNow) {
             },
             body: JSON.stringify({
                 product_id:     _detailProductId,
-                combination_id: _pvCombo.id,
+                combination_id: _pvCombo ? _pvCombo.id : null,
                 variant_id:     null,
                 qty,
                 flavour_names:  _pvSelected.filter(Boolean).join(' / ')
