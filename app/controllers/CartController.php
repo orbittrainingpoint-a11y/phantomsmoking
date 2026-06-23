@@ -145,7 +145,7 @@ class CartController extends Controller
             $this->json(['success' => false, 'error' => 'Item not found'], 404);
         }
 
-        $price = $this->resolvePrice($item['product_id'], $variantOptionIds, null);
+        $price = $this->resolvePrice($item['product_id'], isset($item['combination_id']) ? (int)$item['combination_id'] : null, null);
 
         $this->db->update('cart_items', [
             'quantity'           => $qty,

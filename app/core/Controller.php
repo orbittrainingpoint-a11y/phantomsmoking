@@ -17,7 +17,7 @@ class Controller
         View::render($view, $data, $layout);
     }
 
-    protected function json(mixed $data, int $code = 200): void
+    protected function json(mixed $data, int $code = 200): never
     {
         http_response_code($code);
         header('Content-Type: application/json; charset=utf-8');
@@ -25,7 +25,7 @@ class Controller
         exit;
     }
 
-    protected function redirect(string $url, int $code = 302): void
+    protected function redirect(string $url, int $code = 302): never
     {
         // Prevent open redirect attacks — only allow relative or same-host URLs
         $parsed  = parse_url($url);

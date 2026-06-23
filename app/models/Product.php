@@ -71,7 +71,7 @@ class Product extends Model
         };
 
         $whereStr = implode(' AND ', $where);
-        $total    = (int)$this->db->fetch("SELECT COUNT(*) as cnt FROM products p WHERE $whereStr", $params)['cnt'];
+        $total    = (int)($this->db->fetch("SELECT COUNT(*) as cnt FROM products p WHERE $whereStr", $params)['cnt'] ?? 0);
         $offset   = ($page - 1) * $perPage;
 
         $items = $this->db->fetchAll(
@@ -155,7 +155,7 @@ class Product extends Model
         if (!empty($filters['category_id'])) { $where[] = 'p.category_id = ?'; $params[] = $filters['category_id']; }
 
         $whereStr = implode(' AND ', $where);
-        $total    = (int)$this->db->fetch("SELECT COUNT(*) as cnt FROM products p WHERE $whereStr", $params)['cnt'];
+        $total    = (int)($this->db->fetch("SELECT COUNT(*) as cnt FROM products p WHERE $whereStr", $params)['cnt'] ?? 0);
         $offset   = ($page - 1) * $perPage;
 
         $items = $this->db->fetchAll(
@@ -189,7 +189,7 @@ class Product extends Model
         };
 
         $whereStr = implode(' AND ', $where);
-        $total    = (int)$this->db->fetch("SELECT COUNT(*) as cnt FROM products p WHERE $whereStr", $params)['cnt'];
+        $total    = (int)($this->db->fetch("SELECT COUNT(*) as cnt FROM products p WHERE $whereStr", $params)['cnt'] ?? 0);
         $offset   = ($page - 1) * $perPage;
 
         $items = $this->db->fetchAll(
@@ -356,8 +356,8 @@ class Product extends Model
             [$productId]
         );
         $this->update($productId, [
-            'average_rating' => round((float)$result['avg_rating'], 2),
-            'review_count'   => (int)$result['cnt'],
+            'average_rating' => round((float)($result['avg_rating'] ?? 0), 2),
+            'review_count'   => (int)($result['cnt'] ?? 0),
         ]);
     }
 

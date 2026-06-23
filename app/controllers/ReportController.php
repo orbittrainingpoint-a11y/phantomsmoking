@@ -179,7 +179,7 @@ class ReportController extends Controller
         }
 
         $whereStr = implode(' AND ', $where);
-        $total    = (int)$this->db->fetch("SELECT COUNT(*) as cnt FROM orders o WHERE $whereStr", $params)['cnt'];
+        $total    = (int)($this->db->fetch("SELECT COUNT(*) as cnt FROM orders o WHERE $whereStr", $params)['cnt'] ?? 0);
         $offset   = ($page - 1) * $perPage;
 
         $invoices = $this->db->fetchAll("SELECT o.id, o.order_number, o.shipping_name, o.shipping_phone,
@@ -251,6 +251,11 @@ class ReportController extends Controller
         header('Pragma: no-cache');
 
         $out = fopen('php://output', 'w');
+        if ($out === false) {
+            http_response_code(500);
+            echo 'Unable to open output stream';
+            return;
+        }
         fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM for Excel
 
         switch ($tab) {

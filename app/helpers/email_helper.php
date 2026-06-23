@@ -69,7 +69,7 @@ if (!function_exists('send_whatsapp')) {
         if (!$instance || !$token) return false;
 
         // Normalize number — strip +, spaces, dashes
-        $to = preg_replace('/[^0-9]/', '', $to);
+        $to = preg_replace('/[^0-9]/', '', $to) ?? '';
         // Ensure UAE country code
         if (str_starts_with($to, '0')) $to = '971' . substr($to, 1);
         if (!str_starts_with($to, '971') && strlen($to) === 9) $to = '971' . $to;
@@ -130,7 +130,7 @@ if (!function_exists('send_order_confirmation')) {
     {
         ob_start();
         include __DIR__ . '/../views/emails/order-confirm.php';
-        $body = ob_get_clean();
+        $body = ob_get_clean() ?: '';
 
         $customerEmail = $order['guest_email'] ?? '';
         if (!$customerEmail && !empty($order['user_id'])) {
@@ -258,7 +258,7 @@ if (!function_exists('send_password_reset')) {
         $resetUrl = url('reset-password/' . $token);
         ob_start();
         include __DIR__ . '/../views/emails/password-reset.php';
-        $body = ob_get_clean();
+        $body = ob_get_clean() ?: '';
         send_email($email, "Reset Your Password — Phantom Smoking", $body);
     }
 }
@@ -268,7 +268,7 @@ if (!function_exists('send_welcome_email')) {
     {
         ob_start();
         include __DIR__ . '/../views/emails/welcome.php';
-        $body = ob_get_clean();
+        $body = ob_get_clean() ?: '';
         send_email($user['email'], "Welcome to Phantom Smoking!", $body, $user['first_name']);
     }
 }

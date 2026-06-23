@@ -12,7 +12,8 @@ class Router
 
     public function dispatch(string $method, string $uri): void
     {
-        $uri    = rtrim(parse_url($uri, PHP_URL_PATH), '/') ?: '/';
+        $path = parse_url($uri, PHP_URL_PATH);
+        $uri  = rtrim(is_string($path) ? $path : '/', '/') ?: '/';
         $method = strtoupper($method);
 
         // Handle OPTIONS preflight immediately

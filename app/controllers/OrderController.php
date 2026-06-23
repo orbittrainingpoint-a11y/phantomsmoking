@@ -14,7 +14,7 @@ class OrderController extends Controller
 
         // Logged-in user: must own this order
         if ($order['user_id']) {
-            if (!Auth::check() || $order['user_id'] !== Auth::id()) {
+            if (!Auth::check() || $order['user_id'] !== (int)Auth::id()) {
                 $this->redirect('/');
             }
         } else {
@@ -35,7 +35,7 @@ class OrderController extends Controller
 
         // Logged-in user: must own this order
         if ($order['user_id']) {
-            if (!Auth::check() || $order['user_id'] !== Auth::id()) {
+            if (!Auth::check() || $order['user_id'] !== (int)Auth::id()) {
                 \App\Core\Session::flash('error', 'Please login to track this order.');
                 $this->redirect('/login?redirect=' . urlencode('/track/' . $orderNumber));
             }

@@ -40,8 +40,9 @@ class StripeGateway extends PaymentGateway
             CURLOPT_TIMEOUT        => 30,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
-        $response = json_decode(curl_exec($ch), true);
+        $raw = curl_exec($ch);
         curl_close($ch);
+        $response = is_string($raw) ? (json_decode($raw, true) ?? []) : [];
 
         if (!empty($response['url'])) {
             return ['success' => true, 'redirect_url' => $response['url'], 'transaction_id' => $response['id']];
@@ -58,8 +59,9 @@ class StripeGateway extends PaymentGateway
             CURLOPT_HTTPHEADER     => ["Authorization: Bearer {$this->secretKey}"],
             CURLOPT_TIMEOUT        => 30,
         ]);
-        $response = json_decode(curl_exec($ch), true);
+        $raw = curl_exec($ch);
         curl_close($ch);
+        $response = is_string($raw) ? (json_decode($raw, true) ?? []) : [];
 
         if (($response['payment_status'] ?? '') === 'paid') {
             return ['success' => true, 'transaction_id' => $response['payment_intent'] ?? $sessionId, 'status' => 'paid'];

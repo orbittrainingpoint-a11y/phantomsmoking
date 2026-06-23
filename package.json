@@ -1,0 +1,27 @@
+{
+  "name": "phantomsmoking",
+  "version": "1.0.0",
+  "description": "- PHP 8.2+ with extensions: pdo, pdo_mysql, gd, mbstring, curl, json, openssl\r - MySQL 8.0+ or MariaDB 10.11+\r - Apache with mod_rewrite OR Nginx\r - XAMPP / WAMP / Laragon (local development)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orbittrainingpoint-a11y/phantomsmoking.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/orbittrainingpoint-a11y/phantomsmoking/issues"
+  },
+  "homepage": "https://github.com/orbittrainingpoint-a11y/phantomsmoking#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.61.0"
+  }
+}

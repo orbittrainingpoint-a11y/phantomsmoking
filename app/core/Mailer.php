@@ -99,7 +99,7 @@ class Mailer
         }
     }
 
-    private function connect()
+    private function connect(): mixed
     {
         // Port 465 = SSL wrap, Port 587 = plain then STARTTLS
         $host = ($this->encryption === 'ssl' || $this->port === 465)
@@ -116,12 +116,12 @@ class Mailer
         return $socket;
     }
 
-    private function send_cmd($socket, string $cmd): void
+    private function send_cmd(mixed $socket, string $cmd): void
     {
         fwrite($socket, $cmd . "\r\n");
     }
 
-    private function read($socket): string
+    private function read(mixed $socket): string
     {
         $data = '';
         while ($line = fgets($socket, 515)) {
@@ -131,7 +131,7 @@ class Mailer
         return $data;
     }
 
-    private function expect($socket, int $code): void
+    private function expect(mixed $socket, int $code): void
     {
         $response = $this->read($socket);
         if ((int)substr($response, 0, 3) !== $code) {

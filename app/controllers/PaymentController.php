@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Database;
 use App\Models\Order;
@@ -86,7 +87,7 @@ class PaymentController extends Controller
     // ── Tamara webhook ────────────────────────────────────────────────────────
     public function tamaraWebhook(): void
     {
-        $body      = file_get_contents('php://input');
+        $body      = file_get_contents('php://input') ?: '';
         $signature = $_SERVER['HTTP_X_TAMARA_SIGNATURE'] ?? '';
         $secret    = $this->db->fetch(
             "SELECT setting_value FROM settings WHERE setting_key='tamara_notification_key'"

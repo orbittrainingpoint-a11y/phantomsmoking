@@ -9,13 +9,14 @@ class RateLimitMiddleware
     {
         $ip = $this->getIp();
         $db = Database::getInstance();
-        $since = date('Y-m-d H:i:s', strtotime("-{$decayMinutes} minutes"));
+        $ts    = strtotime("-{$decayMinutes} minutes");
+        $since = date('Y-m-d H:i:s', $ts !== false ? $ts : time());
         // Clean old attempts
         $db->query('DELETE FROM login_attempts WHERE attempted_at < ?', [$since]);
-        $count = (int)$db->fetch(
+        $count = (int)($db->fetch(
             'SELECT COUNT(*) as cnt FROM login_attempts WHERE ip_address = ? AND attempted_at >= ?',
             [$ip, $since]
-        )['cnt'];
+        )['cnt'] ?? 0);
         if ($count >= $maxAttempts) {
             http_response_code(429);
             header('Retry-After: ' . ($decayMinutes * 60));

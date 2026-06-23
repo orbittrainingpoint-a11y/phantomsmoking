@@ -20,7 +20,7 @@ class CheckoutController extends Controller
         $cart = $cartModel->getCartWithItems();
         if (empty($cart['items'])) { $this->redirect('/cart'); }
 
-        $addresses = Auth::check() ? (new User())->getAddresses(Auth::id()) : [];
+        $addresses = Auth::check() ? (new User())->getAddresses((int)Auth::id()) : [];
         $zones     = (new DeliveryZone())->getAll();
 
         // Load active payment methods from settings
@@ -67,17 +67,18 @@ class CheckoutController extends Controller
         // Reward points
         $pointsUsed = 0; $pointsDiscount = 0;
         if (Auth::check() && !empty($data['use_reward_points'])) {
-            $user = (new User())->find(Auth::id());
-            if ($user['reward_points'] >= 500) {
+            $user = (new User())->find((int)Auth::id());
+            $rewardPoints = (int)($user['reward_points'] ?? 0);
+            if ($rewardPoints >= 500) {
                 $maxDiscount    = $cart['subtotal'] * 0.30;
-                $pointsValue    = min($user['reward_points'] / 10, $maxDiscount);
+                $pointsValue    = min($rewardPoints / 10, $maxDiscount);
                 $pointsUsed     = (int)($pointsValue * 10);
                 $pointsDiscount = $pointsValue;
                 $total         -= $pointsDiscount;
             }
         }
 
-        $orderNumber  = 'PS-' . date('Ymd') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        $orderNumber  = 'PS-' . date('Ymd') . '-' . str_pad((string)random_int(1, 9999), 4, '0', STR_PAD_LEFT);
         $pointsEarned = (int)$cart['subtotal'];
 
         // Get user email
@@ -142,10 +143,11 @@ class CheckoutController extends Controller
 
         // Reward points
         if (Auth::check()) {
+            $uid = (int)Auth::id();
             $userModel = new User();
-            if ($pointsUsed > 0) $userModel->deductRewardPoints(Auth::id(), $pointsUsed, 'Redeemed on order ' . $orderNumber, $orderId);
-            $userModel->addRewardPoints(Auth::id(), $pointsEarned, 'earned', 'Earned on order ' . $orderNumber, $orderId);
-            $this->db->query('UPDATE users SET total_orders = total_orders + 1, total_spent = total_spent + ? WHERE id = ?', [$total, Auth::id()]);
+            if ($pointsUsed > 0) $userModel->deductRewardPoints($uid, $pointsUsed, 'Redeemed on order ' . $orderNumber, $orderId);
+            $userModel->addRewardPoints($uid, $pointsEarned, 'earned', 'Earned on order ' . $orderNumber, $orderId);
+            $this->db->query('UPDATE users SET total_orders = total_orders + 1, total_spent = total_spent + ? WHERE id = ?', [$total, $uid]);
         }
 
         if ($cart['coupon_id']) {
@@ -157,7 +159,7 @@ class CheckoutController extends Controller
             $cartModel->clearCart($cart['id']);
             $this->db->update('orders', ['order_status' => 'confirmed'], 'id = ?', [$orderId]);
             $order = $orderModel->getOrderWithItems($orderId);
-            send_order_confirmation($order, $order['items']);
+            if ($order) { send_order_confirmation($order, $order['items']); }
             // Store order ID in session for guest access control
             if (!Auth::check()) {
                 $guestOrders = \App\Core\Session::get('guest_order_ids', []);
@@ -169,6 +171,7 @@ class CheckoutController extends Controller
 
         // Online payment — redirect to gateway
         $order = $orderModel->find($orderId);
+        if (!$order) { $this->redirect('/'); }
         $order['email'] = $email;
         $order['items'] = $items;
 

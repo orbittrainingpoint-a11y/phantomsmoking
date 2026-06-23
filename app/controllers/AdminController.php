@@ -33,7 +33,7 @@ class AdminController extends Controller
         $where   = '1=1'; $params = [];
         if ($search) { $where .= ' AND (p.name LIKE ? OR p.sku LIKE ?)'; $params = ["%$search%", "%$search%"]; }
         if ($status) { $where .= ' AND p.status = ?'; $params[] = $status; }
-        $total = (int)$this->db->fetch("SELECT COUNT(*) as cnt FROM products p WHERE $where", $params)['cnt'];
+        $total = (int)($this->db->fetch("SELECT COUNT(*) as cnt FROM products p WHERE $where", $params)['cnt'] ?? 0);
         $offset = ($page - 1) * 20;
         $products = $this->db->fetchAll("SELECT p.*, c.name AS category_name, b.name AS brand_name, pi.image_path AS primary_image FROM products p LEFT JOIN categories c ON p.category_id = c.id LEFT JOIN brands b ON p.brand_id = b.id LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.is_primary = 1 WHERE $where ORDER BY p.created_at DESC LIMIT 20 OFFSET ?", [...$params, $offset]);
         $categories = (new Category())->getMenuCategories();
@@ -237,7 +237,7 @@ class AdminController extends Controller
     {
         $status = $this->request->post('status', '');
         $note   = sanitize_string($this->request->post('note', ''));
-        (new Order())->updateStatus((int)$id, $status, $note, \App\Core\Auth::id());
+        (new Order())->updateStatus((int)$id, $status, $note, (int)\App\Core\Auth::id());
 
         // Email customer + admin about the status change
         $order = (new Order())->getOrderWithItems((int)$id);
@@ -268,9 +268,10 @@ class AdminController extends Controller
 
     public function customerBan(string $id): void
     {
-        $reason = sanitize_string($this->request->post('reason', ''));
-        $user   = (new User())->find((int)$id);
-        (new User())->update((int)$id, ['is_active' => $user['is_active'] ? 0 : 1, 'banned_reason' => $reason]);
+        $reason   = sanitize_string($this->request->post('reason', ''));
+        $user     = (new User())->find((int)$id);
+        $isActive = $user ? ($user['is_active'] ? 0 : 1) : 0;
+        (new User())->update((int)$id, ['is_active' => $isActive, 'banned_reason' => $reason]);
         $this->flash('success', 'Customer status updated.');
         $this->redirect('/admin/customers/' . $id);
     }

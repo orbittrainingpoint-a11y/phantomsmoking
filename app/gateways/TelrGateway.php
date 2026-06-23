@@ -46,7 +46,8 @@ class TelrGateway extends PaymentGateway
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
             CURLOPT_TIMEOUT        => 30,
         ]);
-        $response = json_decode(curl_exec($ch), true);
+        $raw = curl_exec($ch);
+        $response = is_string($raw) ? (json_decode($raw, true) ?? []) : [];
         curl_close($ch);
 
         if (!empty($response['order']['url'])) {
@@ -72,7 +73,8 @@ class TelrGateway extends PaymentGateway
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
             CURLOPT_TIMEOUT        => 30,
         ]);
-        $response = json_decode(curl_exec($ch), true);
+        $raw = curl_exec($ch);
+        $response = is_string($raw) ? (json_decode($raw, true) ?? []) : [];
         curl_close($ch);
 
         $status = $response['order']['status']['text'] ?? '';

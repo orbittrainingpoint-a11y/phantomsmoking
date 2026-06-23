@@ -1,6 +1,22 @@
 Options -Indexes
 Options -MultiViews
 
+# ─── Block PHP execution in upload/asset dirs at root level ──────────────────
+# Extra layer: assets and uploads should never execute PHP regardless of sub-.htaccess
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Deny PHP files inside assets/ or uploads/ — shell upload protection
+    RewriteRule ^(assets|uploads)/.*\.ph(p[2-9]?|tml|ar)$ - [F,L]
+</IfModule>
+
+# ─── Strip information-disclosure headers ────────────────────────────────────
+<IfModule mod_headers.c>
+    Header unset X-Powered-By
+    Header always unset X-Powered-By
+    # ServerTokens Prod must be set in httpd.conf; this hides the PHP suffix
+    Header always set Server "Apache"
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
@@ -21,6 +37,9 @@ Options -MultiViews
     RewriteRule ^scripts/               - [F,L]
     RewriteRule \.(sql|log|sh|bak)$     - [F,L]
     RewriteRule ^reset_admin\.php$      - [F,L]
+    RewriteRule ^test_smtp\.php$        - [F,L]
+    RewriteRule ^add_phantom_admin\.php$ - [F,L]
+    RewriteRule ^migrate_features\.php$ - [F,L]
 
     # Serve real files and directories directly
     RewriteCond %{REQUEST_FILENAME} -f [OR]

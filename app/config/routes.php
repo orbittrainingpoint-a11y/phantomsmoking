@@ -5,7 +5,9 @@
 return [
     // Public routes
     ['GET',  '/',                          'HomeController@index'],
-    ['GET',  '/shop/{category}',           'CategoryController@show'],
+    ['GET',  '/shop',                        'HomeController@shop'],
+    ['GET',  '/categories',                  'HomeController@categories'],
+    ['GET',  '/shop/{category}',             'CategoryController@show'],
     ['GET',  '/product/{slug}',            'ProductController@show'],
     ['GET',  '/brand/{slug}',              'BrandController@show'],
     ['GET',  '/brands',                    'BrandController@index'],

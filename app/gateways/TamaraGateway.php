@@ -6,15 +6,13 @@ use App\Core\PaymentGateway;
 class TamaraGateway extends PaymentGateway
 {
     private string $apiToken;
-    private string $notificationKey;
     private bool   $testMode;
     private string $baseUrl;
 
     public function __construct()
     {
-        $this->apiToken         = $this->getSetting('tamara_api_token');
-        $this->notificationKey  = $this->getSetting('tamara_notification_key');
-        $this->testMode         = (bool)$this->getSetting('tamara_test_mode');
+        $this->apiToken  = $this->getSetting('tamara_api_token');
+        $this->testMode  = (bool)$this->getSetting('tamara_test_mode');
         $this->baseUrl          = $this->testMode
             ? 'https://api-sandbox.tamara.co'
             : 'https://api.tamara.co';

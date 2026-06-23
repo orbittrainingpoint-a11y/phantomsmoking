@@ -55,8 +55,17 @@ if (!function_exists('save_product_image')) {
         $dir = $uploadBase . '/uploads/products/' . $productId . '/';
         if (!is_dir($dir)) mkdir($dir, 0755, true);
 
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = $productId . '_' . time() . '_' . substr(bin2hex(random_bytes(2)), 0, 4) . '.' . $ext;
+        // Derive extension from validated MIME — never trust the original filename
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime  = $finfo ? (finfo_file($finfo, $file['tmp_name']) ?: '') : '';
+        if ($finfo) finfo_close($finfo);
+        $safeExt = match ($mime) {
+            'image/jpeg' => 'jpg',
+            'image/png'  => 'png',
+            'image/webp' => 'webp',
+            default      => 'jpg',
+        };
+        $filename = $productId . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $safeExt;
         $dest = $dir . $filename;
 
         if (!move_uploaded_file($file['tmp_name'], $dest)) return null;
@@ -80,8 +89,16 @@ if (!function_exists('save_category_image')) {
         $dir = $uploadBase . '/uploads/categories/';
         if (!is_dir($dir)) mkdir($dir, 0755, true);
 
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = 'cat_' . time() . '_' . substr(bin2hex(random_bytes(2)), 0, 4) . '.' . $ext;
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime  = $finfo ? (finfo_file($finfo, $file['tmp_name']) ?: '') : '';
+        if ($finfo) finfo_close($finfo);
+        $safeExt = match ($mime) {
+            'image/jpeg' => 'jpg',
+            'image/png'  => 'png',
+            'image/webp' => 'webp',
+            default      => 'jpg',
+        };
+        $filename = 'cat_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $safeExt;
         $dest = $dir . $filename;
 
         if (!move_uploaded_file($file['tmp_name'], $dest)) return null;

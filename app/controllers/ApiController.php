@@ -18,11 +18,12 @@ class ApiController extends Controller
     {
         $ip    = $this->request->ip();
         $key   = 'api_rl_' . md5($ip);
-        $since = date('Y-m-d H:i:s', strtotime("-{$minutes} minutes"));
-        $count = (int)$this->db->fetch(
+        $ts    = strtotime("-{$minutes} minutes");
+        $since = date('Y-m-d H:i:s', $ts !== false ? $ts : time());
+        $count = (int)($this->db->fetch(
             'SELECT COUNT(*) as cnt FROM login_attempts WHERE ip_address = ? AND attempted_at >= ?',
             [$ip . '_api', $since]
-        )['cnt'];
+        )['cnt'] ?? 0);
         if ($count >= $max) {
             http_response_code(429);
             header('Retry-After: ' . ($minutes * 60));
@@ -356,14 +357,14 @@ public function productFlavours(string $id): void
         $data      = $this->request->json();
         $productId = (int)($data['product_id'] ?? 0);
         $variantId = !empty($data['variant_id']) ? (int)$data['variant_id'] : null;
-        $added     = (new Wishlist())->toggle(Auth::id(), $productId, $variantId);
+        $added     = (new Wishlist())->toggle((int)Auth::id(), $productId, $variantId);
         $this->json(['success' => true, 'added' => $added]);
     }
 
     public function wishlistGet(): void
     {
         if (!Auth::check()) { $this->json(['items' => []]); }
-        $items = (new Wishlist())->getUserWishlist(Auth::id());
+        $items = (new Wishlist())->getUserWishlist((int)Auth::id());
         $this->json(['items' => $items]);
     }
 
@@ -377,7 +378,7 @@ public function productFlavours(string $id): void
         if (!empty($errors)) { $this->json(['success' => false, 'errors' => $errors], 400); }
 
         $productId = (int)$data['product_id'];
-        $userId    = Auth::id();
+        $userId    = (int)Auth::id();
 
         // One review per product per account
         $existing = $this->db->fetch(
@@ -437,14 +438,15 @@ public function productFlavours(string $id): void
     {
         if (!Auth::check()) { $this->json(['count' => 0, 'items' => []]); }
         $notifModel = new Notification();
-        $this->json(['count' => $notifModel->getUnreadCount(Auth::id()), 'items' => $notifModel->getUserNotifications(Auth::id(), 10)]);
+        $uid = (int)Auth::id();
+        $this->json(['count' => $notifModel->getUnreadCount($uid), 'items' => $notifModel->getUserNotifications($uid, 10)]);
     }
 
     public function notificationsRead(): void
     {
         if (!Auth::check()) { $this->json(['success' => false], 401); }
         $data = $this->request->json();
-        (new Notification())->markRead(Auth::id(), $data['id'] ?? null);
+        (new Notification())->markRead((int)Auth::id(), $data['id'] ?? null);
         $this->json(['success' => true]);
     }
 
@@ -484,7 +486,7 @@ public function productFlavours(string $id): void
         $this->requireAdmin();
         $data = $this->request->json();
         if (empty($data['status'])) { $data = $this->request->all(); }
-        (new Order())->updateStatus((int)$id, $data['status'] ?? '', $data['note'] ?? '', Auth::id());
+        (new Order())->updateStatus((int)$id, $data['status'] ?? '', $data['note'] ?? '', (int)Auth::id());
         $this->json(['success' => true]);
     }
 
@@ -495,7 +497,7 @@ public function productFlavours(string $id): void
         $search = $this->request->get('search', '');
         $where = '1=1'; $params = [];
         if ($search) { $where .= ' AND (name LIKE ? OR sku LIKE ?)'; $params = ["%$search%", "%$search%"]; }
-        $total = (int)$this->db->fetch("SELECT COUNT(*) as cnt FROM products WHERE $where", $params)['cnt'];
+        $total = (int)($this->db->fetch("SELECT COUNT(*) as cnt FROM products WHERE $where", $params)['cnt'] ?? 0);
         $offset = ($page - 1) * 20;
         $items = $this->db->fetchAll("SELECT * FROM products WHERE $where ORDER BY created_at DESC LIMIT 20 OFFSET ?", [...$params, $offset]);
         $this->json(['items' => $items, 'total' => $total]);
@@ -569,7 +571,8 @@ public function productFlavours(string $id): void
         $this->requireAdmin();
         $data = $this->request->json();
         $user = (new \App\Models\User())->find((int)$id);
-        (new \App\Models\User())->update((int)$id, ['is_active' => $user['is_active'] ? 0 : 1, 'banned_reason' => $data['reason'] ?? '']);
+        $isActive = $user ? ($user['is_active'] ? 0 : 1) : 0;
+        (new \App\Models\User())->update((int)$id, ['is_active' => $isActive, 'banned_reason' => $data['reason'] ?? '']);
         $this->json(['success' => true]);
     }
 

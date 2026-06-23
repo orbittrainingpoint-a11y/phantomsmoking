@@ -29,6 +29,16 @@ class HomeController extends Controller
         ]);
     }
 
+    public function shop(): void
+    {
+        $this->redirect('/brands');
+    }
+
+    public function categories(): void
+    {
+        $this->redirect('/brands');
+    }
+
     public function about(): void
     {
         $this->requireAgeVerified();

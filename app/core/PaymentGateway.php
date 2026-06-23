@@ -27,11 +27,11 @@ abstract class PaymentGateway
             CURLOPT_TIMEOUT        => 30,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
-        $response = curl_exec($ch);
-        $error    = curl_error($ch);
+        $raw   = curl_exec($ch);
+        $error = curl_error($ch);
         curl_close($ch);
         if ($error) return ['error' => $error];
-        return json_decode($response, true) ?? ['error' => 'Invalid response'];
+        return is_string($raw) ? (json_decode($raw, true) ?? ['error' => 'Invalid response']) : ['error' => 'Invalid response'];
     }
 
     protected function httpGet(string $url, array $headers = []): array
@@ -43,10 +43,10 @@ abstract class PaymentGateway
             CURLOPT_TIMEOUT        => 30,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
-        $response = curl_exec($ch);
-        $error    = curl_error($ch);
+        $raw   = curl_exec($ch);
+        $error = curl_error($ch);
         curl_close($ch);
         if ($error) return ['error' => $error];
-        return json_decode($response, true) ?? ['error' => 'Invalid response'];
+        return is_string($raw) ? (json_decode($raw, true) ?? ['error' => 'Invalid response']) : ['error' => 'Invalid response'];
     }
 }

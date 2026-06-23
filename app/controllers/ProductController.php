@@ -23,7 +23,7 @@ class ProductController extends Controller
 
         $inWishlist = false;
         if (Auth::check()) {
-            $inWishlist = (new Wishlist())->isInWishlist(Auth::id(), $product['id']);
+            $inWishlist = (new Wishlist())->isInWishlist((int)Auth::id(), $product['id']);
         }
 
         // Recently viewed (cookie-based)

@@ -43,6 +43,18 @@ spl_autoload_register(function (string $class): void {
     if (file_exists($file)) require_once $file;
 });
 
+// Load Composer autoloader (vendor packages: Laminas, Defuse, Bugsnag, etc.)
+require_once ROOT_PATH . '/vendor/autoload.php';
+
+// ─── Bugsnag error monitoring ──────────────────────────────────────────────
+$bugsnagKey = $_ENV['BUGSNAG_API_KEY'] ?? '';
+if ($bugsnagKey && class_exists(\Bugsnag\Client::class)) {
+    $bugsnagClient = \Bugsnag\Client::make($bugsnagKey);
+    $bugsnagClient->getConfig()->setReleaseStage($_ENV['APP_ENV'] ?? 'production');
+    $bugsnagClient->getConfig()->setNotifyReleaseStages(['production', 'staging']);
+    \Bugsnag\Handler::register($bugsnagClient);
+}
+
 // Load helpers
 require_once APP_PATH . '/helpers/functions.php';
 require_once APP_PATH . '/helpers/validators.php';
@@ -61,7 +73,14 @@ header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 header('X-XSS-Protection: 1; mode=block');
 header("Content-Security-Policy: frame-ancestors 'self' https://{$appHost}");
+header('Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()');
+// HSTS — only send over HTTPS to prevent stripping attacks
+if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+    ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https') {
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
+}
 header_remove('Server');
+header_remove('X-Powered-By');
 
 // Route
 $router = \App\Core\Router::load();

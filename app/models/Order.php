@@ -59,7 +59,7 @@ class Order extends Model
 
     public function getUserOrders(int $userId, int $page = 1, int $perPage = 10): array
     {
-        $total = (int)$this->db->fetch('SELECT COUNT(*) as cnt FROM orders WHERE user_id = ?', [$userId])['cnt'];
+        $total = (int)($this->db->fetch('SELECT COUNT(*) as cnt FROM orders WHERE user_id = ?', [$userId])['cnt'] ?? 0);
         $offset = ($page - 1) * $perPage;
         $items = $this->db->fetchAll(
             'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?',
@@ -96,7 +96,7 @@ class Order extends Model
         if (!empty($filters['date_to'])) { $where[] = 'created_at <= ?'; $params[] = $filters['date_to'] . ' 23:59:59'; }
 
         $whereStr = implode(' AND ', $where);
-        $total = (int)$this->db->fetch("SELECT COUNT(*) as cnt FROM orders WHERE $whereStr", $params)['cnt'];
+        $total = (int)($this->db->fetch("SELECT COUNT(*) as cnt FROM orders WHERE $whereStr", $params)['cnt'] ?? 0);
         $offset = ($page - 1) * $perPage;
         $items = $this->db->fetchAll(
             "SELECT * FROM orders WHERE $whereStr ORDER BY created_at DESC LIMIT ? OFFSET ?",
@@ -119,11 +119,11 @@ class Order extends Model
             []
         );
         return [
-            'today_revenue'  => (float)$todayRevenue['rev'],
-            'today_orders'   => (int)$todayRevenue['cnt'],
-            'pending_orders' => (int)$pending['cnt'],
-            'new_customers'  => (int)$newCustomers['cnt'],
-            'month_revenue'  => (float)$monthRevenue['rev'],
+            'today_revenue'  => (float)($todayRevenue['rev'] ?? 0),
+            'today_orders'   => (int)($todayRevenue['cnt'] ?? 0),
+            'pending_orders' => (int)($pending['cnt'] ?? 0),
+            'new_customers'  => (int)($newCustomers['cnt'] ?? 0),
+            'month_revenue'  => (float)($monthRevenue['rev'] ?? 0),
         ];
     }
 

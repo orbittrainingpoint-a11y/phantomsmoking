@@ -1,0 +1,18 @@
+{
+    "source": {
+        "directories": ["app/helpers", "app/core"],
+        "excludes": ["app/views", "app/config"]
+    },
+    "logs": {
+        "text": "tests/reports/infection.txt",
+        "summary": "tests/reports/infection-summary.txt",
+        "json": "tests/reports/infection.json"
+    },
+    "mutators": {
+        "@default": true
+    },
+    "testFramework": "phpunit",
+    "bootstrap": "tests/bootstrap.php",
+    "testFrameworkOptions": "--stop-on-failure",
+    "timeout": 30
+}

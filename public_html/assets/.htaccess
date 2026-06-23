@@ -1,0 +1,17 @@
+# Block ALL PHP execution in assets — no exceptions
+<FilesMatch "\.ph(p[2-9]?|tml|ar)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Also deny via handler — belt-and-suspenders
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+# Block script execution via CGI
+Options -ExecCGI
+RemoveHandler .php .php3 .php4 .php5 .php6 .php7 .php8 .phtml .phar
+
+# Block htaccess overrides in subdirectories (prevents attacker-planted .htaccess)
+AllowOverride None

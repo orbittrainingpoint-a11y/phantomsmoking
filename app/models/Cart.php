@@ -28,7 +28,7 @@ class Cart extends Model
             ]);
             $cart = $this->find($id);
         }
-        return $cart;
+        return $cart ?? throw new \RuntimeException('Failed to create cart');
     }
 
     public function getCartWithItems(?int $cartId = null): array

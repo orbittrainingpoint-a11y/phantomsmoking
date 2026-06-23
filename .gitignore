@@ -1,7 +1,12 @@
 .env
 /vendor/
+/node_modules/
 /public_html/uploads/
 /logs/
+/test-results/
+/playwright-report/
 *.log
 .DS_Store
 Thumbs.db
+.phpunit.result.cache
+composer.lock

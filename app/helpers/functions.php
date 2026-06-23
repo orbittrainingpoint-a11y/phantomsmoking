@@ -21,8 +21,8 @@ if (!function_exists('slugify')) {
     function slugify(string $text): string
     {
         $text = strtolower(trim($text));
-        $text = preg_replace('/[^a-z0-9\s-]/', '', $text);
-        $text = preg_replace('/[\s-]+/', '-', $text);
+        $text = preg_replace('/[^a-z0-9\s-]/', '', $text) ?? '';
+        $text = preg_replace('/[\s-]+/', '-', $text) ?? '';
         return trim($text, '-');
     }
 }
@@ -45,13 +45,19 @@ if (!function_exists('truncate')) {
 if (!function_exists('generate_token')) {
     function generate_token(int $length = 32): string
     {
-        return bin2hex(random_bytes($length));
+        return bin2hex(random_bytes(max(1, $length)));
     }
 }
 
 if (!function_exists('e')) {
     function e(?string $str): string
     {
+        // Use Laminas Escaper when available (installed via composer), fallback to native
+        if (class_exists(\Laminas\Escaper\Escaper::class)) {
+            static $escaper = null;
+            $escaper ??= new \Laminas\Escaper\Escaper('utf-8');
+            return $escaper->escapeHtml($str ?? '');
+        }
         return htmlspecialchars($str ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 }
@@ -160,7 +166,8 @@ if (!function_exists('time_ago')) {
         if ($diff < 3600) return (int)($diff / 60) . ' min ago';
         if ($diff < 86400) return (int)($diff / 3600) . ' hours ago';
         if ($diff < 604800) return (int)($diff / 86400) . ' days ago';
-        return date('d M Y', strtotime($datetime));
+        $ts = strtotime($datetime);
+        return $ts !== false ? date('d M Y', $ts) : $datetime;
     }
 }
 

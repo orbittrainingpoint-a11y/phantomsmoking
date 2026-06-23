@@ -61,7 +61,7 @@ abstract class Model
             $sql .= " WHERE $where";
             $params = array_values($conditions);
         }
-        return (int)$this->db->fetch($sql, $params)['COUNT(*)'];
+        return (int)($this->db->fetch($sql, $params)['COUNT(*)'] ?? 0);
     }
 
     public function paginate(int $page, int $perPage, array $conditions = [], string $orderBy = ''): array

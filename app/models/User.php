@@ -65,8 +65,8 @@ class User extends Model
 
     public function addRewardPoints(int $userId, int $points, string $type, string $description, ?int $orderId = null): void
     {
-        $user = $this->find($userId);
-        $balance = ($user['reward_points'] ?? 0) + $points;
+        $user    = $this->find($userId);
+        $balance = (int)($user['reward_points'] ?? 0) + $points;
         $this->db->insert('reward_points_log', [
             'user_id'      => $userId,
             'type'         => $type,
@@ -81,9 +81,10 @@ class User extends Model
 
     public function deductRewardPoints(int $userId, int $points, string $description, ?int $orderId = null): bool
     {
-        $user = $this->find($userId);
-        if (($user['reward_points'] ?? 0) < $points) return false;
-        $balance = $user['reward_points'] - $points;
+        $user         = $this->find($userId);
+        $rewardPoints = (int)($user['reward_points'] ?? 0);
+        if ($rewardPoints < $points) return false;
+        $balance = $rewardPoints - $points;
         $this->db->insert('reward_points_log', [
             'user_id'      => $userId,
             'type'         => 'redeemed',
@@ -128,7 +129,7 @@ class User extends Model
             $where .= ' AND (first_name LIKE ? OR last_name LIKE ? OR email LIKE ?)';
             $params = ["%$search%", "%$search%", "%$search%"];
         }
-        $total = (int)$this->db->fetch("SELECT COUNT(*) as cnt FROM users WHERE $where", $params)['cnt'];
+        $total = (int)($this->db->fetch("SELECT COUNT(*) as cnt FROM users WHERE $where", $params)['cnt'] ?? 0);
         $offset = ($page - 1) * $perPage;
         $items = $this->db->fetchAll(
             "SELECT id, first_name, last_name, email, phone, reward_points, total_orders, total_spent, is_active, created_at FROM users WHERE $where ORDER BY created_at DESC LIMIT ? OFFSET ?",

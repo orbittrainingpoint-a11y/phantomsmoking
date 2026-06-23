@@ -79,6 +79,6 @@ class Session
 
     public static function id(): string
     {
-        return session_id();
+        return session_id() ?: '';
     }
 }

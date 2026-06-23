@@ -32,10 +32,10 @@ class AuthController extends Controller
     {
         $ip    = $this->request->ip();
         $since = date('Y-m-d H:i:s', strtotime('-15 minutes'));
-        $attempts = (int)$this->db->fetch(
+        $attempts = (int)($this->db->fetch(
             'SELECT COUNT(*) as cnt FROM login_attempts WHERE ip_address = ? AND attempted_at >= ?',
             [$ip, $since]
-        )['cnt'];
+        )['cnt'] ?? 0);
         if ($attempts >= 5) {
             $this->flash('error', 'Too many login attempts. Please try again in 15 minutes.');
             $this->redirect('/login');
@@ -169,6 +169,7 @@ class AuthController extends Controller
 
         if ($purpose === 'login') {
             $user = $this->userModel->findByEmail($email);
+            if (!$user) { $this->redirect('/login'); }
             Auth::login($user);
             (new Cart())->mergeGuestCart($user['id']);
             $this->redirect($pending['redirect'] ?? '/account');
@@ -176,6 +177,7 @@ class AuthController extends Controller
             // Complete registration
             $userId = $this->userModel->register($pending['form_data']);
             $user   = $this->userModel->find($userId);
+            if (!$user) { $this->redirect('/login'); }
             Auth::login($user);
             send_welcome_email($user);
             $this->flash('success', "Welcome to Phantom Smoking! Your account has been created.");
@@ -192,10 +194,10 @@ class AuthController extends Controller
 
         // Throttle: max 3 resends per 10 minutes
         $since = date('Y-m-d H:i:s', strtotime('-10 minutes'));
-        $count = (int)$this->db->fetch(
+        $count = (int)($this->db->fetch(
             'SELECT COUNT(*) as cnt FROM otp_verifications WHERE email = ? AND purpose = ? AND created_at >= ?',
             [$pending['email'], $pending['purpose'], $since]
-        )['cnt'];
+        )['cnt'] ?? 0);
 
         if ($count >= 3) {
             $this->flash('error', 'Too many resend requests. Please wait 10 minutes.');
@@ -218,10 +220,10 @@ class AuthController extends Controller
     {
         $ip    = $this->request->ip();
         $since = date('Y-m-d H:i:s', strtotime('-15 minutes'));
-        $count = (int)$this->db->fetch(
+        $count = (int)($this->db->fetch(
             'SELECT COUNT(*) as cnt FROM login_attempts WHERE ip_address = ? AND attempted_at >= ?',
             [$ip . '_pwreset', $since]
-        )['cnt'];
+        )['cnt'] ?? 0);
         if ($count >= 3) {
             $this->flash('error', 'Too many requests. Please wait 15 minutes.');
             $this->redirect('/forgot-password');

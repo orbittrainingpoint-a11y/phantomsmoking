@@ -14,22 +14,23 @@ class AccountController extends Controller
     public function dashboard(): void
     {
         $user  = Auth::user();
-        $stats = (new User())->getStats(Auth::id());
-        $orders = (new Order())->getUserOrders(Auth::id(), 1, 5);
+        $uid   = (int)Auth::id();
+        $stats = (new User())->getStats($uid);
+        $orders = (new Order())->getUserOrders($uid, 1, 5);
         $this->render('account/dashboard', ['title' => "My Account — Phantom Smoking", 'user' => $user, 'stats' => $stats, 'recent_orders' => $orders['items']]);
     }
 
     public function orders(): void
     {
         $page   = max(1, (int)$this->request->get('page', 1));
-        $orders = (new Order())->getUserOrders(Auth::id(), $page);
+        $orders = (new Order())->getUserOrders((int)Auth::id(), $page);
         $this->render('account/orders', ['title' => "My Orders — Phantom Smoking", 'orders' => $orders]);
     }
 
     public function orderDetail(string $id): void
     {
         $order = (new Order())->getOrderWithItems((int)$id);
-        if (!$order || $order['user_id'] !== Auth::id()) { $this->redirect('/account/orders'); }
+        if (!$order || $order['user_id'] !== (int)Auth::id()) { $this->redirect('/account/orders'); }
         $this->render('account/order-detail', ['title' => "Order #{$order['order_number']} — Phantom Smoking", 'order' => $order]);
     }
 
@@ -47,14 +48,14 @@ class AccountController extends Controller
             'date_of_birth'         => $this->request->post('date_of_birth') ?: null,
             'newsletter_subscribed' => (int)$this->request->post('newsletter', 0),
         ];
-        (new User())->update(Auth::id(), $data);
+        (new User())->update((int)Auth::id(), $data);
         $this->flash('success', 'Profile updated successfully.');
         $this->redirect('/account/profile');
     }
 
     public function addresses(): void
     {
-        $addresses = (new User())->getAddresses(Auth::id());
+        $addresses = (new User())->getAddresses((int)Auth::id());
         $this->render('account/addresses', ['title' => "My Addresses — Phantom Smoking", 'addresses' => $addresses, 'csrf' => $this->csrfToken()]);
     }
 
@@ -71,7 +72,7 @@ class AccountController extends Controller
             'emirate'        => sanitize_string($this->request->post('emirate', 'Dubai')),
             'is_default'     => (int)$this->request->post('is_default', 0),
         ];
-        (new User())->addAddress(Auth::id(), $data);
+        (new User())->addAddress((int)Auth::id(), $data);
         $this->flash('success', 'Address added.');
         $this->redirect('/account/addresses');
     }
@@ -89,28 +90,28 @@ class AccountController extends Controller
             'emirate'       => sanitize_string($this->request->post('emirate', 'Dubai')),
             'is_default'    => (int)$this->request->post('is_default', 0),
         ];
-        (new User())->updateAddress((int)$id, Auth::id(), $data);
+        (new User())->updateAddress((int)$id, (int)Auth::id(), $data);
         $this->flash('success', 'Address updated.');
         $this->redirect('/account/addresses');
     }
 
     public function deleteAddress(string $id): void
     {
-        (new User())->deleteAddress((int)$id, Auth::id());
+        (new User())->deleteAddress((int)$id, (int)Auth::id());
         $this->flash('success', 'Address removed.');
         $this->redirect('/account/addresses');
     }
 
     public function wishlist(): void
     {
-        $items = (new Wishlist())->getUserWishlist(Auth::id());
+        $items = (new Wishlist())->getUserWishlist((int)Auth::id());
         $this->render('account/wishlist', ['title' => "My Wishlist — Phantom Smoking", 'items' => $items]);
     }
 
     public function rewards(): void
     {
         $user    = Auth::user();
-        $history = (new User())->getRewardHistory(Auth::id());
+        $history = (new User())->getRewardHistory((int)Auth::id());
         $this->render('account/rewards', ['title' => "Reward Points — Phantom Smoking", 'user' => $user, 'history' => $history]);
     }
 
@@ -122,6 +123,7 @@ class AccountController extends Controller
     public function changePassword(): void
     {
         $user    = Auth::user();
+        if (!$user) { $this->redirect('/login'); }
         $current = $this->request->post('current_password', '');
         $new     = $this->request->post('new_password', '');
         $confirm = $this->request->post('confirm_password', '');
@@ -134,7 +136,7 @@ class AccountController extends Controller
         if ($new !== $confirm) $errors[] = 'Passwords do not match.';
         if (!empty($errors)) { $this->flash('error', $errors[0]); $this->redirect('/account/change-password'); }
 
-        (new User())->update(Auth::id(), ['password_hash' => Auth::hashPassword($new)]);
+        (new User())->update((int)Auth::id(), ['password_hash' => Auth::hashPassword($new)]);
         $this->flash('success', 'Password changed successfully.');
         $this->redirect('/account');
     }

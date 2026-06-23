@@ -1,0 +1,20 @@
+parameters:
+    level: 6
+    bootstrapFiles:
+        - tests/bootstrap.php
+    paths:
+        - app/core
+        - app/controllers
+        - app/models
+        - app/middleware
+        - app/helpers
+        - app/gateways
+    excludePaths:
+        - app/views
+        - app/config
+    ignoreErrors:
+        - '#Call to an undefined method PDO::#'
+        - '#Call to an undefined method PDOStatement::#'
+        - identifier: missingType.iterableValue
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false

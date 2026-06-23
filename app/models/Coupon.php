@@ -22,7 +22,7 @@ class Coupon extends Model
         if ($cartTotal < $coupon['min_order_amount']) return ['valid' => false, 'error' => 'Minimum order amount is ' . format_price($coupon['min_order_amount'])];
         if ($userId) {
             $used = $this->db->fetch('SELECT COUNT(*) as cnt FROM coupon_usage WHERE coupon_id = ? AND user_id = ?', [$coupon['id'], $userId]);
-            if ((int)$used['cnt'] >= $coupon['usage_per_user']) return ['valid' => false, 'error' => 'You have already used this coupon'];
+            if ((int)($used['cnt'] ?? 0) >= $coupon['usage_per_user']) return ['valid' => false, 'error' => 'You have already used this coupon'];
         }
         return ['valid' => true, 'coupon' => $coupon];
     }

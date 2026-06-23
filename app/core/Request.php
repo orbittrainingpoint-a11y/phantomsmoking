@@ -68,7 +68,8 @@ class Request
 
     public function uri(): string
     {
-        return parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+        $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+        return is_string($path) ? $path : '/';
     }
 
     public function validate(array $rules): array

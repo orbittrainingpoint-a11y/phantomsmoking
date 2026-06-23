@@ -17,10 +17,10 @@ class Notification extends Model
 
     public function getUnreadCount(int $userId): int
     {
-        return (int)$this->db->fetch(
+        return (int)($this->db->fetch(
             'SELECT COUNT(*) as cnt FROM notifications WHERE user_id = ? AND is_read = 0',
             [$userId]
-        )['cnt'];
+        )['cnt'] ?? 0);
     }
 
     public function markRead(int $userId, ?int $notifId = null): void

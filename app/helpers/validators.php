@@ -9,7 +9,7 @@ if (!function_exists('validate_email')) {
 if (!function_exists('validate_phone_uae')) {
     function validate_phone_uae(string $phone): bool
     {
-        $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
+        $phone = preg_replace('/[\s\-\(\)]/', '', $phone) ?? '';
         return (bool)preg_match('/^(\+971|00971|0)?[0-9]{9}$/', $phone);
     }
 }
@@ -70,7 +70,11 @@ if (!function_exists('validate_image_upload')) {
         }
         // Validate real MIME via magic bytes (not user-supplied)
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $file['tmp_name']);
+        if ($finfo === false) {
+            $errors[] = 'Could not determine file type';
+            return $errors;
+        }
+        $mime = finfo_file($finfo, $file['tmp_name']) ?: '';
         finfo_close($finfo);
         if (!in_array($mime, $allowedMimes)) {
             $errors[] = 'Only JPG, PNG and WebP images are allowed';

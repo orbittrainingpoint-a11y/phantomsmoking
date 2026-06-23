@@ -35,7 +35,7 @@ class View
         extract($data, EXTR_SKIP);
         ob_start();
         include $file;
-        return ob_get_clean();
+        return ob_get_clean() ?: '';
     }
 
     public static function partial(string $name, array $data = []): void
@@ -46,13 +46,23 @@ class View
         if (file_exists($file)) include $file;
     }
 
-    public static function escape(string $str): string
+    public static function escape(?string $str): string
     {
-        return htmlspecialchars($str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return Security::escapeHtml($str);
     }
 
-    public static function e(string $str): string
+    public static function e(?string $str): string
     {
         return self::escape($str);
+    }
+
+    public static function escapeAttr(?string $str): string
+    {
+        return Security::escapeHtmlAttr($str);
+    }
+
+    public static function escapeJs(?string $str): string
+    {
+        return Security::escapeJs($str);
     }
 }

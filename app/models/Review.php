@@ -9,10 +9,10 @@ class Review extends Model
 
     public function getProductReviews(int $productId, int $page = 1, int $perPage = 10): array
     {
-        $total = (int)$this->db->fetch(
+        $total = (int)($this->db->fetch(
             'SELECT COUNT(*) as cnt FROM product_reviews WHERE product_id = ? AND status = "approved"',
             [$productId]
-        )['cnt'];
+        )['cnt'] ?? 0);
         $offset = ($page - 1) * $perPage;
         $items = $this->db->fetchAll(
             'SELECT r.*, u.first_name, u.last_name, u.avatar FROM product_reviews r
@@ -37,7 +37,7 @@ class Review extends Model
 
     public function getPending(int $page = 1, int $perPage = 20): array
     {
-        $total = (int)$this->db->fetch('SELECT COUNT(*) as cnt FROM product_reviews WHERE status = "pending"', [])['cnt'];
+        $total = (int)($this->db->fetch('SELECT COUNT(*) as cnt FROM product_reviews WHERE status = "pending"', [])['cnt'] ?? 0);
         $offset = ($page - 1) * $perPage;
         $items = $this->db->fetchAll(
             'SELECT r.*, u.first_name, u.last_name, p.name AS product_name FROM product_reviews r
