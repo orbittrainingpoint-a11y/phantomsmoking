@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Sitemap:https://phantomsmoking.ae/sitemap.xml
+Sitemap:https://phantomsmoking.ae/sitemap-1.xml
+Sitemap:https://phantomsmoking.ae/sitemap-2.xml
+Sitemap:https://phantomsmoking.ae/sitemap-3.xml
+Sitemap:https://phantomsmoking.ae/sitemap-4.xml
+Sitemap:https://phantomsmoking.ae/sitemap-5.xml
+Sitemap:https://phantomsmoking.ae/sitemap-6.xml
+Sitemap:https://phantomsmoking.ae/sitemap-7.xml
+Sitemap:https://phantomsmoking.ae/sitemap-8.xml
+Sitemap:https://phantomsmoking.ae/sitemap-9.xml
+Sitemap:https://phantomsmoking.ae/sitemap-10.xml
+Sitemap:https://phantomsmoking.ae/sitemap-11.xml
+Sitemap:https://phantomsmoking.ae/sitemap-12.xml
+Sitemap:https://phantomsmoking.ae/sitemap-13.xml
+Sitemap:https://phantomsmoking.ae/sitemap-14.xml
+Sitemap:https://phantomsmoking.ae/sitemap-15.xml
+Sitemap:https://phantomsmoking.ae/sitemap-16.xml
+Sitemap:https://phantomsmoking.ae/sitemap-17.xml

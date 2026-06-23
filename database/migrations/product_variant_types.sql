@@ -25,9 +25,11 @@ CREATE TABLE IF NOT EXISTS `variant_type_options` (
   FOREIGN KEY (`variant_type_id`) REFERENCES `product_variant_types`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Add variant_option_ids to cart_items
-ALTER TABLE `cart_items` ADD COLUMN `variant_option_ids` VARCHAR(255) NULL;
-ALTER TABLE `cart_items` ADD COLUMN `selected_flavours` VARCHAR(500) NULL;
+-- Add variant_option_id to cart_items (nullable — backwards compatible)
+ALTER TABLE `cart_items`
+  ADD COLUMN IF NOT EXISTS `variant_option_ids` VARCHAR(255) NULL COMMENT 'JSON array of selected variant_type_option ids',
+  ADD COLUMN IF NOT EXISTS `selected_flavours` VARCHAR(500) NULL COMMENT 'Legacy flavour names text';
 
 -- Add variant_option_ids to order_items
-ALTER TABLE `order_items` ADD COLUMN `variant_option_ids` VARCHAR(255) NULL;
+ALTER TABLE `order_items`
+  ADD COLUMN IF NOT EXISTS `variant_option_ids` VARCHAR(255) NULL;
