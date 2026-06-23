@@ -132,20 +132,123 @@ if (!function_exists('send_order_confirmation')) {
         include __DIR__ . '/../views/emails/order-confirm.php';
         $body = ob_get_clean();
 
-        $email = $order['guest_email'] ?? '';
-        if (!$email && !empty($order['user_id'])) {
-            $db    = \App\Core\Database::getInstance();
-            $user  = $db->fetch('SELECT email FROM users WHERE id = ?', [$order['user_id']]);
-            $email = $user['email'] ?? '';
+        $customerEmail = $order['guest_email'] ?? '';
+        if (!$customerEmail && !empty($order['user_id'])) {
+            $db            = \App\Core\Database::getInstance();
+            $user          = $db->fetch('SELECT email FROM users WHERE id = ?', [$order['user_id']]);
+            $customerEmail = $user['email'] ?? '';
         }
 
-        // Send email
-        if ($email) {
-            send_email($email, 'Order Confirmed — ' . $order['order_number'] . ' | Phantom Smoking', $body, $order['shipping_name']);
+        $subject = 'Order Confirmed — ' . $order['order_number'] . ' | Phantom Smoking';
+
+        // Send to customer
+        if ($customerEmail) {
+            send_email($customerEmail, $subject, $body, $order['shipping_name']);
         }
+
+        // Send copy to admin
+        $adminEmail = $_ENV['ADMIN_NOTIFY_EMAIL'] ?? 'phantomsmokingonline@gmail.com';
+        send_email($adminEmail, '[New Order] ' . $subject, $body, 'Phantom Smoking Admin');
 
         // Send WhatsApp to customer
         send_order_whatsapp($order, $items);
+    }
+}
+
+if (!function_exists('send_order_status_email')) {
+    function send_order_status_email(array $order): void
+    {
+        $statusLabels = [
+            'confirmed'        => 'Order Confirmed',
+            'processing'       => 'Order Being Processed',
+            'packed'           => 'Order Packed',
+            'out_for_delivery' => 'Out for Delivery',
+            'delivered'        => 'Order Delivered',
+            'cancelled'        => 'Order Cancelled',
+            'returned'         => 'Order Returned',
+        ];
+        $status      = $order['status'] ?? '';
+        $statusLabel = $statusLabels[$status] ?? ucwords(str_replace('_', ' ', $status));
+        $appName     = $_ENV['APP_NAME'] ?? 'Phantom Smoking';
+        $trackUrl    = rtrim($_ENV['APP_URL'] ?? '', '/') . '/track/' . $order['order_number'];
+
+        $statusColor = match($status) {
+            'delivered'        => '#10b981',
+            'cancelled'        => '#ef4444',
+            'returned'         => '#6b7280',
+            'out_for_delivery' => '#3b82f6',
+            default            => '#C8963C',
+        };
+
+        $noteHtml = !empty($order['status_note'])
+            ? '<div style="background:#f9f6f1;border-left:3px solid #C8963C;padding:10px 14px;margin:16px 0;font-size:0.88rem;color:#374151">' . htmlspecialchars($order['status_note']) . '</div>'
+            : '';
+
+        $body = <<<HTML
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f0ede8;font-family:Arial,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:40px 0">
+  <tr><td align="center">
+    <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:10px;overflow:hidden">
+      <tr>
+        <td style="background:#1A1A2E;padding:24px 32px;text-align:center;border-bottom:3px solid {$statusColor}">
+          <div style="font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:1px">{$appName}</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:0.78rem;margin-top:4px">DUBAI, UAE</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:32px">
+          <div style="text-align:center;margin-bottom:24px">
+            <div style="display:inline-block;background:{$statusColor};color:#fff;padding:8px 22px;border-radius:20px;font-size:0.9rem;font-weight:700">{$statusLabel}</div>
+          </div>
+          <p style="color:#374151;font-size:0.95rem;margin:0 0 8px">Hi <strong>{$order['shipping_name']}</strong>,</p>
+          <p style="color:#6B7280;font-size:0.88rem;margin:0 0 20px">Your order status has been updated.</p>
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f6f1;border-radius:8px;margin-bottom:20px">
+            <tr><td style="padding:14px 18px;font-size:0.85rem;color:#6B7280;border-bottom:1px solid #e5e7eb">Order Number</td>
+                <td style="padding:14px 18px;font-size:0.88rem;font-weight:700;color:#1A1A2E;text-align:right;border-bottom:1px solid #e5e7eb">{$order['order_number']}</td></tr>
+            <tr><td style="padding:14px 18px;font-size:0.85rem;color:#6B7280">Status</td>
+                <td style="padding:14px 18px;text-align:right"><span style="background:{$statusColor};color:#fff;padding:3px 12px;border-radius:20px;font-size:0.8rem;font-weight:700">{$statusLabel}</span></td></tr>
+          </table>
+          {$noteHtml}
+          <div style="text-align:center;margin:24px 0">
+            <a href="{$trackUrl}" style="background:#C8963C;color:#fff;padding:12px 28px;border-radius:4px;text-decoration:none;font-weight:700;font-size:0.9rem">Track Your Order →</a>
+          </div>
+          <p style="color:#9CA3AF;font-size:0.8rem;text-align:center;margin:0">
+            Questions? WhatsApp us at <a href="https://wa.me/971568335210" style="color:#C8963C">+971 56 833 5210</a>
+            or email <a href="mailto:phantomsmokingonline@gmail.com" style="color:#C8963C">phantomsmokingonline@gmail.com</a>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td style="background:#1A1A2E;padding:16px 32px;text-align:center;color:rgba(255,255,255,0.35);font-size:0.72rem">
+          © {$appName} · Dubai, UAE · For adults 18+ only
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>
+HTML;
+
+        // Get customer email
+        $customerEmail = $order['guest_email'] ?? '';
+        if (!$customerEmail && !empty($order['user_id'])) {
+            $db            = \App\Core\Database::getInstance();
+            $user          = $db->fetch('SELECT email FROM users WHERE id = ?', [$order['user_id']]);
+            $customerEmail = $user['email'] ?? '';
+        }
+
+        $subject = $statusLabel . ' — ' . $order['order_number'] . ' | ' . $appName;
+
+        // Send to customer
+        if ($customerEmail) {
+            send_email($customerEmail, $subject, $body, $order['shipping_name']);
+        }
+
+        // Send copy to admin
+        $adminEmail = $_ENV['ADMIN_NOTIFY_EMAIL'] ?? 'phantomsmokingonline@gmail.com';
+        send_email($adminEmail, '[Status Update] ' . $subject, $body, 'Phantom Smoking Admin');
     }
 }
 

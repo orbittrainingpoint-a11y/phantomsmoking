@@ -31,6 +31,14 @@ async function addToCart(productId, variantId, qty = 1, btn = null, flavourName 
         if (data.success) {
             updateCartBadge(data.cart_count);
             await refreshCartDrawer();
+            showToast('Added to cart!', 'success');
+            const drawer  = document.getElementById('cartDrawer');
+            const overlay = document.getElementById('cartOverlay');
+            if (drawer && overlay) {
+                drawer.classList.add('open');
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
         } else {
             showToast(data.error || 'Could not add to cart', 'error');
         }
@@ -198,13 +206,14 @@ function _pcpSelect(level, value) {
     _pcp.selected[level] = value;
     for (let l = level + 1; l < _pcp.selected.length; l++) _pcp.selected[l] = null;
     _pcp.combo = _pcp.selected.every(v => v !== null) ? _pcpFindCombo() : null;
-    _pcpRender();
+    _pcpRender(false); // clear errors on selection
 }
 
-function _pcpRender() {
+function _pcpRender(markErrors = false) {
     const wrap = document.getElementById('addModal_selects');
     if (!wrap) return;
     wrap.innerHTML = '';
+    let firstError = null;
 
     _pcp.types.forEach((type, level) => {
         if (level > 0 && _pcp.selected[level - 1] === null) return;
@@ -212,12 +221,17 @@ function _pcpRender() {
         if (!available.length) return;
 
         const selVal = _pcp.selected[level];
+        const isError = markErrors && selVal === null;
+
         const group = document.createElement('div');
         group.style.marginBottom = '14px';
-        group.innerHTML = `<div style="font-weight:700;font-size:0.88rem;margin-bottom:8px">
+        group.innerHTML = `<div style="font-weight:700;font-size:0.88rem;margin-bottom:8px;color:${isError ? '#dc2626' : 'inherit'}">
+            ${isError ? '<i class="fas fa-exclamation-circle" style="margin-right:4px"></i>' : ''}
             ${_pcpEsc(type.type_name)}
             ${selVal ? `<span style="font-weight:400;color:#C8963C;font-size:0.82rem"> — ${_pcpEsc(selVal)}</span>` : ''}
-        </div><div style="display:flex;flex-wrap:wrap;gap:8px" id="pcpPills_${level}"></div>`;
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;${isError ? 'border:2px dashed #dc2626;border-radius:10px;padding:8px;' : ''}" id="pcpPills_${level}"></div>
+        ${isError ? `<div style="font-size:0.8rem;color:#dc2626;margin-top:6px"><i class="fas fa-exclamation-triangle"></i> Please select a ${_pcpEsc(type.type_name)}</div>` : ''}`;
 
         const pillsWrap = group.querySelector(`#pcpPills_${level}`);
         available.forEach(opt => {
@@ -227,11 +241,14 @@ function _pcpRender() {
             pill.type = 'button';
             pill.style.cssText = `padding:7px 16px;border:2px solid ${isActive ? '#C8963C' : (isOos ? '#e5e7eb' : 'var(--color-border)')};border-radius:20px;font-size:0.83rem;font-weight:600;cursor:${isOos ? 'default' : 'pointer'};background:${isActive ? '#C8963C' : (isOos ? '#f9fafb' : '#fff')};color:${isActive ? '#fff' : (isOos ? '#9ca3af' : 'inherit')};transition:all .15s`;
             pill.innerHTML = _pcpEsc(opt.value) + (isOos ? '<span style="font-size:0.68rem;font-weight:400;display:block">Out of stock</span>' : '');
-            if (!isOos) pill.onclick = () => _pcpSelect(level, opt.value);
+            if (!isOos) pill.onclick = () => { _pcpSelect(level, opt.value); };
             pillsWrap.appendChild(pill);
         });
         wrap.appendChild(group);
+        if (isError && !firstError) firstError = group;
     });
+
+    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
     // Price preview
     const priceEl = document.getElementById('addModal_price');
@@ -247,11 +264,11 @@ function _pcpRender() {
             priceEl.style.display = 'none';
         }
     }
-    if (confirmBtn) confirmBtn.disabled = !_pcp.combo || parseInt(_pcp.combo.stock) <= 0;
+    if (confirmBtn) confirmBtn.disabled = _pcp.combo ? (parseInt(_pcp.combo.stock) <= 0) : false;
 }
 
 async function addModalConfirm() {
-    if (!_pcp.combo) { showToast('Please select all options', 'error'); return; }
+    if (!_pcp.combo) { _pcpRender(true); return; } // show red errors
     if (parseInt(_pcp.combo.stock) <= 0) { showToast('Out of stock', 'error'); return; }
 
     const confirmBtn = document.getElementById('addModal_confirmBtn');

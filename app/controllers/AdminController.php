@@ -238,6 +238,14 @@ class AdminController extends Controller
         $status = $this->request->post('status', '');
         $note   = sanitize_string($this->request->post('note', ''));
         (new Order())->updateStatus((int)$id, $status, $note, \App\Core\Auth::id());
+
+        // Email customer + admin about the status change
+        $order = (new Order())->getOrderWithItems((int)$id);
+        if ($order) {
+            $order['status_note'] = $note;
+            send_order_status_email($order);
+        }
+
         $this->flash('success', 'Order status updated.');
         $this->redirect('/admin/orders/' . $id);
     }

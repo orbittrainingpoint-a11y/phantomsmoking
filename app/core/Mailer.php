@@ -145,7 +145,7 @@ class Mailer
         $fromName  = $this->fromName;
         // When sender = recipient, PHP mail() loops. Use server's default sender.
         if (strtolower($to) === strtolower($fromEmail)) {
-            $serverHost = $_SERVER['HTTP_HOST'] ?? 'zemariashotel.com';
+            $serverHost = $_SERVER['HTTP_HOST'] ?? 'phantomsmoking.com';
             $fromEmail  = 'no-reply@' . $serverHost;
         }
         $headers = implode("\r\n", [

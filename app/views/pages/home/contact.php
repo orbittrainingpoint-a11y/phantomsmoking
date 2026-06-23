@@ -4,6 +4,7 @@ $flashError   = flash_get('error');
 $_db = \App\Core\Database::getInstance();
 $_mapUrl = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='google_maps_embed_url'")['setting_value'] ?? '';
 $_mapAddr = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='store_map_address'")['setting_value'] ?? 'Dubai Marina, Dubai, UAE';
+$_contactEmail = setting('contact_email', 'phantomsmokingonline@gmail.com');
 ?>
 
 <!-- Hero -->
@@ -75,7 +76,7 @@ $_mapAddr = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='s
           <div class="contact-card-icon"><i class="fas fa-envelope"></i></div>
           <div>
             <div class="contact-card-label">Email</div>
-            <div class="contact-card-value"><a href="mailto:info@phantomsmoking.com">info@phantomsmoking.com</a></div>
+            <div class="contact-card-value"><a href="mailto:<?= e($_contactEmail) ?>"><?= e($_contactEmail) ?></a></div>
           </div>
         </div>
 

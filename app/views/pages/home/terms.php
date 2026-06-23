@@ -1,3 +1,4 @@
+<?php $_email = setting('contact_email', 'phantomsmokingonline@gmail.com'); ?>
 <div class="page-hero">
   <div class="container">
     <h1 style="font-family:var(--font-heading);font-size:clamp(1.8rem,4vw,2.4rem);color:#fff;margin-bottom:10px">Terms & <span style="color:var(--color-secondary)">Conditions</span></h1>
@@ -7,9 +8,7 @@
 
 <div class="container section" style="max-width:800px">
   <div style="line-height:1.9;color:var(--color-text-muted)">
-
     <p>By accessing and using the Phantom Smoking website and placing orders, you agree to be bound by these Terms & Conditions. Please read them carefully before using our services.</p>
-
     <?php foreach ([
       ['Age Restriction', 'You must be 18 years of age or older to purchase from Phantom Smoking. By confirming your age on our website, you declare that you are of legal age. We reserve the right to cancel any order and request proof of age upon delivery. Our delivery team will not hand over orders to individuals who appear to be under 18 years of age.'],
       ['Product Information', 'All product descriptions, images, and specifications on our website are provided in good faith and are accurate to the best of our knowledge. Prices are displayed in UAE Dirhams (AED) and are inclusive of 5% UAE VAT. Phantom Smoking reserves the right to change prices, product availability, and specifications without prior notice.'],
@@ -20,11 +19,10 @@
       ['Limitation of Liability', 'Phantom Smoking shall not be liable for any indirect, incidental, or consequential damages arising from the use of our products or services. Our total liability shall not exceed the value of the order in question.'],
       ['Health Warning', '⚠️ Tobacco and nicotine products are harmful to health. Smoking causes cancer, heart disease, stroke, lung diseases, and other serious conditions. Phantom Smoking complies with UAE Federal Law No. 15 of 2009 on Tobacco Control and all applicable UAE regulations regarding the sale and marketing of tobacco and nicotine products.'],
       ['Governing Law', 'These Terms & Conditions are governed by and construed in accordance with the laws of the United Arab Emirates. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts of Dubai, UAE.'],
-      ['Contact', 'For any questions regarding these Terms & Conditions, please contact us at <a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a> or call <a href="tel:+971568335210" style="color:var(--color-secondary)">+971 56 833 5210</a>.'],
+      ['Contact', 'For any questions regarding these Terms & Conditions, please contact us at <a href="mailto:' . e($_email) . '" style="color:var(--color-secondary)">' . e($_email) . '</a> or call <a href="tel:+971568335210" style="color:var(--color-secondary)">+971 56 833 5210</a>.'],
     ] as [$heading, $content]): ?>
     <h2 style="font-family:var(--font-heading);color:var(--color-primary);font-size:1.2rem;margin:28px 0 10px;padding-top:8px;border-top:1px solid var(--color-border)"><?= $heading ?></h2>
     <p><?= $content ?></p>
     <?php endforeach; ?>
-
   </div>
 </div>

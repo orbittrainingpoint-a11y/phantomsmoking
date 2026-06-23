@@ -93,10 +93,10 @@ $primaryImage = $primaryImage ?: '/assets/images/placeholder.jpg';
           <input type="number" class="qty-input" id="productQty" value="1" min="1" max="99">
           <button class="qty-btn" onclick="changeQty(1)">+</button>
         </div>
-        <button class="btn btn-primary btn-lg" id="addToCartBtn" onclick="pvAddToCart(false)" disabled>
+        <button class="btn btn-primary btn-lg" id="addToCartBtn" onclick="pvAddToCart(false)">
           <i class="fas fa-shopping-bag"></i> Add to Cart
         </button>
-        <button class="btn btn-lg" id="buyNowBtn" onclick="pvAddToCart(true)" disabled
+        <button class="btn btn-lg" id="buyNowBtn" onclick="pvAddToCart(true)"
           style="background:var(--color-primary);color:#fff;border:2px solid var(--color-primary)">
           <i class="fas fa-bolt"></i> Buy Now
         </button>
@@ -227,6 +227,9 @@ $primaryImage = $primaryImage ?: '/assets/images/placeholder.jpg';
 .pv-pill-active{border-color:var(--color-secondary);background:var(--color-secondary);color:#fff}
 .pv-pill-oos{border-color:#e5e7eb;color:#9ca3af;cursor:default;background:#f9fafb}
 .pv-pill-oos .pv-oos-tag{font-size:0.68rem;font-weight:400;display:block;margin-top:1px}
+.pv-group-error .pv-group-label{color:#dc2626}
+.pv-group-error .pv-pills{border:2px dashed #dc2626;border-radius:10px;padding:8px}
+.pv-error-msg{font-size:0.8rem;color:#dc2626;margin-top:6px;display:flex;align-items:center;gap:4px}
 </style>
 
 <script>
@@ -273,31 +276,34 @@ function pvShowBasePrice() {
 }
 
 // ══ Render all selector groups ══
-function pvRender() {
+function pvRender(markErrors = false) {
     const wrap = document.getElementById('pvSelectors');
     if (!wrap) return;
     wrap.innerHTML = '';
+    let firstError = null;
 
     _pvTypes.forEach((type, level) => {
-        // Only render up to the first unselected level + 1
-        // i.e. show level N only if all levels 0..N-1 are selected
         if (level > 0 && _pvSelected[level - 1] === null) return;
 
-        // Get available options for this level given current selections
         const available = pvAvailableOptions(level);
         if (!available.length) return;
 
         const group = document.createElement('div');
         group.className = 'pv-group';
+        group.id = 'pvGroup_' + level;
 
         const selVal = _pvSelected[level];
+        const isError = markErrors && selVal === null;
+        if (isError) group.classList.add('pv-group-error');
+
         group.innerHTML = `<div class="pv-group-label">
+            <i class="fas fa-${isError ? 'exclamation-circle' : 'check-circle'}" style="color:${isError ? '#dc2626' : (selVal ? 'var(--color-secondary)' : 'var(--color-border)')};font-size:0.85rem"></i>
             ${escPv(type.type_name)}
             ${selVal ? `<span class="pv-selected-val">— ${escPv(selVal)}</span>` : ''}
-        </div><div class="pv-pills" id="pvPills_${level}"></div>`;
+        </div><div class="pv-pills" id="pvPills_${level}"></div>
+        ${isError ? `<div class="pv-error-msg"><i class="fas fa-exclamation-triangle"></i> Please select a ${escPv(type.type_name)}</div>` : ''}`;
 
         const pillsWrap = group.querySelector(`#pvPills_${level}`);
-
         available.forEach(opt => {
             const isActive = selVal === opt.value;
             const isOos    = opt.totalStock === 0;
@@ -312,7 +318,12 @@ function pvRender() {
         });
 
         wrap.appendChild(group);
+        if (isError && !firstError) firstError = group;
     });
+
+    if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
     pvUpdatePriceArea();
 }
@@ -342,17 +353,11 @@ function pvAvailableOptions(level) {
 // ══ Handle pill selection ══
 function pvSelect(level, value) {
     _pvSelected[level] = value;
-    // Clear all deeper selections
     for (let l = level + 1; l < _pvSelected.length; l++) _pvSelected[l] = null;
     _pvCombo = null;
-
-    // Check if this is the last level — find exact matching combo
     const lastLevel = _pvTypes.length - 1;
-    if (level === lastLevel || pvIsFullySelected()) {
-        _pvCombo = pvFindCombo();
-    }
-
-    pvRender();
+    if (level === lastLevel || pvIsFullySelected()) _pvCombo = pvFindCombo();
+    pvRender(false); // clear errors on selection
 }
 
 // Check if all levels are selected
@@ -388,8 +393,6 @@ function pvUpdatePriceArea() {
     if (!fullySelected || !combo) {
         priceWrap.style.display  = 'none';
         prompt.style.display     = '';
-        if (addBtn) addBtn.disabled = true;
-        if (buyBtn) buyBtn.disabled = true;
         return;
     }
 
@@ -403,8 +406,6 @@ function pvUpdatePriceArea() {
     if (stock > 0) {
         stockWrap.className     = 'stock-status in-stock';
         stockEl.textContent     = stock <= 5 ? `Only ${stock} left!` : `In Stock (${stock} available)`;
-        if (addBtn) { addBtn.disabled = false; }
-        if (buyBtn) { buyBtn.disabled = false; }
         if (qtyInput) qtyInput.max = stock;
     } else {
         stockWrap.className     = 'stock-status out-of-stock';
@@ -417,7 +418,10 @@ function pvUpdatePriceArea() {
 // ══ Add to cart using selected combination ══
 async function pvAddToCart(buyNow) {
     const hasVariants = _pvTypes.length > 0;
-    if (hasVariants && !_pvCombo) { showToast('Please select all options', 'error'); return; }
+    if (hasVariants && !_pvCombo) {
+        pvRender(true); // show red errors + scroll
+        return;
+    }
     if (hasVariants && parseInt(_pvCombo.stock) <= 0) { showToast('This combination is out of stock', 'error'); return; }
 
     const qty   = parseInt(document.getElementById('productQty')?.value) || 1;

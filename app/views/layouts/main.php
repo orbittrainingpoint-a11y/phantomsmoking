@@ -280,7 +280,7 @@ $baseUrl = rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/');
         <div class="footer-heading">Contact Us</div>
         <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i><span>Dubai, United Arab Emirates</span></div>
         <div class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+971568335210">+971 56 833 5210</a></div>
-        <div class="footer-contact-item"><i class="fas fa-envelope"></i><a href="mailto:info@phantomsmoking.com">info@phantomsmoking.com</a></div>
+        <div class="footer-contact-item"><i class="fas fa-envelope"></i><a href="mailto:<?= e(setting('contact_email','phantomsmokingonline@gmail.com')) ?>"><?= e(setting('contact_email','phantomsmokingonline@gmail.com')) ?></a></div>
         <div class="footer-contact-item"><i class="fab fa-whatsapp"></i><a href="https://wa.me/971568335210">WhatsApp Us</a></div>
         <div class="footer-contact-item"><i class="fas fa-clock"></i><span>Sat–Thu: 10AM–11PM | Fri: 2PM–11PM</span></div>
       </div>
@@ -299,8 +299,8 @@ $baseUrl = rtrim($_ENV['APP_URL'] ?? 'http://localhost', '/');
 <!-- Floating Contact Buttons -->
 <?php
 $_db = \App\Core\Database::getInstance();
-$_wa  = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='whatsapp_number'")['setting_value'] ?? '971568335210';
-$_em  = $_db->fetch("SELECT setting_value FROM settings WHERE setting_key='contact_email'")['setting_value'] ?? 'info@phantomsmoking.com';
+$_wa  = setting('whatsapp_number', '971568335210');
+$_em  = setting('contact_email', 'phantomsmokingonline@gmail.com');
 ?>
 <div style="position:fixed;bottom:24px;right:18px;display:flex;flex-direction:column;gap:12px;z-index:99999">
   <a href="https://wa.me/<?= e($_wa) ?>" target="_blank" rel="noopener"

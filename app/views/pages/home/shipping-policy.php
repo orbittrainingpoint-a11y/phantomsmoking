@@ -1,3 +1,4 @@
+<?php $_email = setting('contact_email', 'phantomsmokingonline@gmail.com'); ?>
 <div class="page-hero">
   <div class="container">
     <h1 style="font-family:var(--font-heading);font-size:clamp(1.8rem,4vw,2.4rem);color:#fff;margin-bottom:10px">Shipping <span style="color:var(--color-secondary)">Policy</span></h1>
@@ -6,13 +7,11 @@
 </div>
 
 <div class="container section" style="max-width:800px">
-
-  <!-- Delivery Options -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:40px">
     <?php foreach ([
-      ['fas fa-bolt',         'var(--color-secondary)', 'Express 1-Hour',    'AED 25 flat',          'Dubai only · Orders before 10PM'],
-      ['fas fa-truck',        '#3B82F6',                'Standard Delivery', 'Free over AED 100',    'All UAE · 1-2 business days'],
-      ['fas fa-calendar-day', 'var(--color-success)',   'Next Day Delivery', 'AED 20 flat',          'All UAE · Order before 5PM'],
+      ['fas fa-bolt',         'var(--color-secondary)', 'Express 1-Hour',    'AED 25 flat',       'Dubai only · Orders before 10PM'],
+      ['fas fa-truck',        '#3B82F6',                'Standard Delivery', 'Free over AED 100', 'All UAE · 1-2 business days'],
+      ['fas fa-calendar-day', 'var(--color-success)',   'Next Day Delivery', 'AED 20 flat',       'All UAE · Order before 5PM'],
     ] as [$icon, $color, $title, $price, $note]): ?>
     <div style="border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:24px;text-align:center">
       <i class="<?= $icon ?>" style="font-size:2rem;color:<?= $color ?>;margin-bottom:12px;display:block"></i>
@@ -37,6 +36,6 @@
     <p>In compliance with UAE Federal Law No. 15 of 2009 on Tobacco Control, our delivery team may request proof of age (Emirates ID or passport) upon delivery. Orders will not be handed over to individuals who appear to be under 18 years of age.</p>
 
     <h2 style="font-family:var(--font-heading);color:var(--color-primary);font-size:1.2rem;margin:24px 0 12px">Contact Us</h2>
-    <p>For any shipping queries, contact us at <a href="mailto:info@phantomsmoking.com" style="color:var(--color-secondary)">info@phantomsmoking.com</a> or call <a href="tel:+971568335210" style="color:var(--color-secondary)">+971 56 833 5210</a>.</p>
+    <p>For any shipping queries, contact us at <a href="mailto:<?= e($_email) ?>" style="color:var(--color-secondary)"><?= e($_email) ?></a> or call <a href="tel:+971568335210" style="color:var(--color-secondary)">+971 56 833 5210</a>.</p>
   </div>
 </div>

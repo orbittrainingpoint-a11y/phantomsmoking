@@ -100,8 +100,8 @@ td{padding:9px 12px;border-bottom:1px solid #eee}
     </div>
 
     <p style="color:#6B7280;font-size:0.83rem;margin-top:20px;text-align:center">
-      Questions? WhatsApp us at <a href="https://wa.me/971559545800" style="color:#C8963C">+971 55 954 5800</a>
-      or email <a href="mailto:info@phantomsmoking.ae" style="color:#C8963C">info@phantomsmoking.ae</a>
+      Questions? WhatsApp us at <a href="https://wa.me/971568335210" style="color:#C8963C">+971 56 833 5210</a>
+      or email <a href="mailto:phantomsmokingonline@gmail.com" style="color:#C8963C">phantomsmokingonline@gmail.com</a>
     </p>
   </div>
   <div class="footer">

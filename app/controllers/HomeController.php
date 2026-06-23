@@ -49,7 +49,7 @@ class HomeController extends Controller
         $message = sanitize_string($this->request->post('message', ''));
         if ($name && validate_email($email) && $message) {
             send_email(
-                'info@phantomsmoking.com',
+                setting('contact_email', 'phantomsmokingonline@gmail.com'),
                 "Contact Form: {$subject} — {$name}",
                 "<p><b>From:</b> {$name} ({$email})</p><p><b>Subject:</b> {$subject}</p><p>" . nl2br($message) . "</p>"
             );

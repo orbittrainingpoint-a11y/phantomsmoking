@@ -5,33 +5,29 @@ $hasDiscount = !empty($product['compare_at_price']) && $product['compare_at_pric
 $discountPct = $hasDiscount ? discount_percent($product['price'], $product['compare_at_price']) : 0;
 $inStock     = ($product['stock_quantity'] ?? 0) > 0;
 $productName = addslashes($product['name']);
+$productUrl  = '/product/' . e($product['slug']);
 ?>
-<div class="product-card">
+<a href="<?= $productUrl ?>" class="product-card" style="text-decoration:none;color:inherit;display:block">
   <div class="product-card-image">
-    <a href="/product/<?= e($product['slug']) ?>">
-      <img src="<?= e($imgSrc) ?>" alt="<?= e($product['name']) ?>" loading="lazy">
-    </a>
+    <img src="<?= e($imgSrc) ?>" alt="<?= e($product['name']) ?>" loading="lazy">
     <div class="product-card-badges">
       <?php if (!empty($product['is_new_arrival'])): ?><span class="badge badge-new">New</span><?php endif; ?>
       <?php if ($hasDiscount): ?><span class="badge badge-sale">-<?= $discountPct ?>%</span><?php endif; ?>
       <?php if (!$inStock): ?><span class="badge badge-danger">Out of Stock</span><?php endif; ?>
     </div>
     <div class="product-card-actions">
-      <button class="product-action-btn wishlist-toggle" data-product-id="<?= $product['id'] ?>" title="Add to Wishlist" onclick="toggleWishlist(<?= $product['id'] ?>, this)">
+      <button class="product-action-btn wishlist-toggle" data-product-id="<?= $product['id'] ?>" title="Add to Wishlist"
+        onclick="event.preventDefault();event.stopPropagation();toggleWishlist(<?= $product['id'] ?>, this)">
         <i class="fas fa-heart"></i>
       </button>
-      <a href="/product/<?= e($product['slug']) ?>" class="product-action-btn" title="Quick View">
-        <i class="fas fa-eye"></i>
-      </a>
+      <span class="product-action-btn" title="Quick View"><i class="fas fa-eye"></i></span>
     </div>
   </div>
   <div class="product-card-body">
     <?php if (!empty($product['brand_name'])): ?>
     <div class="product-brand"><?= e($product['brand_name']) ?></div>
     <?php endif; ?>
-    <a href="/product/<?= e($product['slug']) ?>">
-      <div class="product-name"><?= e($product['name']) ?></div>
-    </a>
+    <div class="product-name"><?= e($product['name']) ?></div>
     <?php if (($product['average_rating'] ?? 0) > 0): ?>
     <div class="product-rating">
       <div class="stars"><?= star_rating($product['average_rating']) ?></div>
@@ -47,7 +43,7 @@ $productName = addslashes($product['name']);
       </div>
       <?php if ($inStock): ?>
       <button class="product-add-btn" title="Add to Cart"
-        onclick="openFlavourPopup(<?= $product['id'] ?>, '<?= $productName ?>', this)">
+        onclick="event.preventDefault();event.stopPropagation();openFlavourPopup(<?= $product['id'] ?>, '<?= $productName ?>', this)">
         <i class="fas fa-plus"></i>
       </button>
       <?php else: ?>
@@ -55,4 +51,4 @@ $productName = addslashes($product['name']);
       <?php endif; ?>
     </div>
   </div>
-</div>
+</a>

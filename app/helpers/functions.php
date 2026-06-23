@@ -1,4 +1,22 @@
 <?php
+if (!function_exists('setting')) {
+    function setting(string $key, string $default = ''): string
+    {
+        static $cache = [];
+        if (!isset($cache[$key])) {
+            try {
+                $row = \App\Core\Database::getInstance()->fetch(
+                    'SELECT setting_value FROM settings WHERE setting_key = ?', [$key]
+                );
+                $cache[$key] = $row['setting_value'] ?? $default;
+            } catch (\Throwable $e) {
+                $cache[$key] = $default;
+            }
+        }
+        return $cache[$key] ?: $default;
+    }
+}
+
 if (!function_exists('slugify')) {
     function slugify(string $text): string
     {
