@@ -43,7 +43,7 @@ $user        = is_logged_in() ? current_user() : null;
             <div class="form-group">
               <label class="form-label">Phone *</label>
               <input type="tel" name="shipping_phone" class="form-control" required
-                placeholder="+971 56 217 7081"
+                placeholder="+971 ## ### ####"
                 value="<?= $user ? e($user['phone'] ?? '') : '' ?>">
             </div>
           </div>
